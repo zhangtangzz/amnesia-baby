@@ -9,19 +9,20 @@ from .models import KnowledgeBase, Fact
 from .extractor import KnowledgeExtractor
 from .store import KnowledgeStore
 from .query import KnowledgeQuery
+from .shared_store import get_shared_store
 
 
 class KnowledgeService:
     """
     知识服务
-    
+
     协调知识库操作：提取 -> 存储 -> 查询
     """
-    
+
     def __init__(self):
         """初始化服务"""
         self.extractor = KnowledgeExtractor()
-        self.store = KnowledgeStore()
+        self.store = get_shared_store()
         self.query = KnowledgeQuery()
     
     async def process(self, text: str, source: str, character_id: Optional[str] = None) -> KnowledgeBase:

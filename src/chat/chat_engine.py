@@ -9,6 +9,7 @@ from .character_loader import CharacterLoader
 from .knowledge_loader import KnowledgeLoader
 from .prompt_builder import PromptBuilder
 from ..memory.service import MemoryService
+from ..knowledge.shared_store import get_shared_store
 from ..llm.xiaomi_provider import XiaomiProvider
 from ..llm.base import LLMProvider
 from ..llm.models import LLMResponse
@@ -40,7 +41,7 @@ class ChatEngine:
             llm_provider: 可选的外部 LLM 提供商实例
         """
         self.character_loader = CharacterLoader()
-        self.knowledge_loader = KnowledgeLoader()
+        self.knowledge_loader = KnowledgeLoader(store=get_shared_store())
         self.prompt_builder = PromptBuilder()
         self.memory_service = MemoryService(short_term_size=50)
 
