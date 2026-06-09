@@ -3,5 +3,9 @@
 """
 
 from .profile import PersonalityProfile
+from .big_five import BigFiveProfile
 
-__all__ = ["PersonalityProfile"]
+__all__ = [
+    "PersonalityProfile",
+    "BigFiveProfile",
+]
