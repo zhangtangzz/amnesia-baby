@@ -1,12 +1,99 @@
 // 聊天页面 JS
 
-let currentCharacterId = 'elon';
+let currentCharacterId = '';
+
+// 页面加载时获取角色列表
+document.addEventListener('DOMContentLoaded', () => {
+    loadCharacters();
+});
+
+async function loadCharacters() {
+    try {
+        const data = await apiCall('/characters/list');
+        if (data.success && data.data) {
+            renderCharacterList(data.data);
+        }
+    } catch (e) {
+        console.error('加载角色失败:', e);
+    }
+}
+
+function renderCharacterList(characters) {
+    const container = document.getElementById('character-list');
+    container.innerHTML = '';
+
+    characters.forEach((char, index) => {
+        const item = document.createElement('div');
+        item.className = 'character-item' + (index === 0 ? ' active' : '');
+        item.dataset.id = char.character_id;
+        item.onclick = function() { selectCharacter(this); };
+        item.innerHTML = '<span class="char-avatar">' + (char.avatar || '👤') + '</span>' +
+            '<span class="char-name">' + escapeHtml(char.name) + '</span>';
+        container.appendChild(item);
+    });
+
+    // 默认选中第一个
+    if (characters.length > 0) {
+        currentCharacterId = characters[0].character_id;
+        document.getElementById('current-character').textContent = characters[0].name;
+    }
+}
 
 function selectCharacter(element) {
     document.querySelectorAll('.character-item').forEach(el => el.classList.remove('active'));
     element.classList.add('active');
     currentCharacterId = element.dataset.id;
     document.getElementById('current-character').textContent = element.querySelector('.char-name').textContent;
+
+    // 清空聊天区域
+    document.getElementById('chat-messages').innerHTML =
+        '<div class="message system"><div class="message-content">已切换到 ' +
+        escapeHtml(element.querySelector('.char-name').textContent) + '</div></div>';
+}
+
+function showCreateForm() {
+    document.getElementById('create-form').style.display = 'block';
+}
+
+function hideCreateForm() {
+    document.getElementById('create-form').style.display = 'none';
+}
+
+async function createCharacter() {
+    const id = document.getElementById('new-char-id').value.trim();
+    const name = document.getElementById('new-char-name').value.trim();
+    const avatar = document.getElementById('new-char-avatar').value.trim() || '👤';
+    const desc = document.getElementById('new-char-desc').value.trim();
+
+    if (!id || !name) {
+        alert('请输入角色ID和名称');
+        return;
+    }
+
+    try {
+        const data = await apiCall('/characters/create', {
+            method: 'POST',
+            body: JSON.stringify({
+                character_id: id,
+                name: name,
+                avatar: avatar,
+                description: desc,
+            }),
+        });
+
+        if (data.success) {
+            hideCreateForm();
+            document.getElementById('new-char-id').value = '';
+            document.getElementById('new-char-name').value = '';
+            document.getElementById('new-char-avatar').value = '';
+            document.getElementById('new-char-desc').value = '';
+            loadCharacters(); // 刷新列表
+        } else {
+            alert(data.message || '创建失败');
+        }
+    } catch (e) {
+        alert('创建失败: ' + e.message);
+    }
 }
 
 function addMessage(role, content, meta = '') {
@@ -29,7 +116,7 @@ function escapeHtml(text) {
 async function sendMessage() {
     const input = document.getElementById('message-input');
     const message = input.value.trim();
-    if (!message) return;
+    if (!message || !currentCharacterId) return;
 
     const provider = document.getElementById('provider-select').value;
     addMessage('user', message);

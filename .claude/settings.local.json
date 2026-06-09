@@ -58,7 +58,10 @@
       "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8002)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/chat/test_knowledge_integration.py -v)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/chat/test_knowledge_loader.py -v)",
-      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8003)"
+      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8003)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/chat/test_character_store.py -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/api/test_characters.py -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/chat/test_character_loader.py -v)"
     ]
   }
 }

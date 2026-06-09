@@ -5,15 +5,21 @@
     <div class="chat-sidebar">
         <h3>选择角色</h3>
         <div class="character-list" id="character-list">
-            <div class="character-item active" data-id="elon" onclick="selectCharacter(this)">
-                <span class="char-avatar">🚀</span>
-                <span class="char-name">Elon Musk</span>
-            </div>
-            <div class="character-item" data-id="zhangsan" onclick="selectCharacter(this)">
-                <span class="char-avatar">👨‍💼</span>
-                <span class="char-name">张三</span>
+            <!-- 动态加载 -->
+        </div>
+        <button class="btn-secondary" style="width:100%;margin-top:12px" onclick="showCreateForm()">+ 创建角色</button>
+
+        <div id="create-form" style="display:none;margin-top:12px">
+            <input type="text" id="new-char-id" placeholder="角色ID (英文)" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+            <input type="text" id="new-char-name" placeholder="角色名称" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+            <input type="text" id="new-char-avatar" placeholder="头像emoji (如 🧑)" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+            <input type="text" id="new-char-desc" placeholder="角色描述" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+            <div style="display:flex;gap:6px">
+                <button class="btn-primary" style="flex:1" onclick="createCharacter()">创建</button>
+                <button class="btn-secondary" style="flex:1" onclick="hideCreateForm()">取消</button>
             </div>
         </div>
+
         <div class="provider-select">
             <label>LLM 提供商</label>
             <select id="provider-select">

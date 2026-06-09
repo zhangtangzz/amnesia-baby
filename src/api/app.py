@@ -37,11 +37,13 @@ from src.api.routes.chat import router as chat_router
 from src.api.routes.knowledge import router as knowledge_router
 from src.api.routes.memory import router as memory_router
 from src.api.routes.vector import router as vector_router
+from src.api.routes.characters import router as characters_router
 app.include_router(personality_router)
 app.include_router(chat_router)
 app.include_router(knowledge_router)
 app.include_router(memory_router)
 app.include_router(vector_router)
+app.include_router(characters_router)
 
 # 注册 Web 页面路由
 from src.web.routes import router as web_router
