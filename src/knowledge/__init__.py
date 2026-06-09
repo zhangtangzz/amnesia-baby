@@ -18,6 +18,7 @@ from .extractor import KnowledgeExtractor
 from .store import KnowledgeStore
 from .query import KnowledgeQuery
 from .updater import KnowledgeUpdater
+from .service import KnowledgeService
 
 __all__ = [
     "KnowledgeProfile",
@@ -34,4 +35,5 @@ __all__ = [
     "KnowledgeStore",
     "KnowledgeQuery",
     "KnowledgeUpdater",
+    "KnowledgeService",
 ]
