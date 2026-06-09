@@ -7,6 +7,8 @@ from .store import VectorStore
 from .search import SemanticSearch
 from .similarity import SimilarityCalculator
 from .ranker import SearchRanker
+from .service import VectorSearchService
+from .models import SearchResult
 
 __all__ = [
     "EmbeddingService",
@@ -14,4 +16,6 @@ __all__ = [
     "SemanticSearch",
     "SimilarityCalculator",
     "SearchRanker",
+    "VectorSearchService",
+    "SearchResult",
 ]
