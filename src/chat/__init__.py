@@ -7,6 +7,7 @@ from .knowledge_loader import KnowledgeLoader
 from .prompt_builder import PromptBuilder
 from .llm_service import LLMService
 from .chat_service import ChatService
+from .chat_agent import ChatAgent
 
 __all__ = [
     "CharacterLoader",
@@ -14,4 +15,5 @@ __all__ = [
     "PromptBuilder",
     "LLMService",
     "ChatService",
+    "ChatAgent",
 ]
