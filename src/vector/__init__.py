@@ -3,7 +3,9 @@
 """
 
 from .embedding import EmbeddingService
+from .store import VectorStore
 
 __all__ = [
     "EmbeddingService",
+    "VectorStore",
 ]
