@@ -9,6 +9,8 @@
 <div class="knowledge-layout">
     <div class="upload-section">
         <h3>上传素材</h3>
+
+        <!-- 文本输入 -->
         <form id="knowledge-form" onsubmit="processKnowledge(event)">
             <div class="form-group">
                 <label for="k-character-id">角色 ID</label>
@@ -24,6 +26,26 @@
             </div>
             <button type="submit" class="btn-primary">处理素材</button>
         </form>
+
+        <hr style="margin: 20px 0; border-color: var(--border);">
+
+        <!-- 文件上传 -->
+        <h4>📁 文件上传</h4>
+        <form id="file-upload-form" onsubmit="uploadKnowledgeFile(event)">
+            <div class="form-group">
+                <label for="f-character-id">角色 ID</label>
+                <input type="text" id="f-character-id" value="elon" placeholder="输入角色ID">
+            </div>
+            <div class="form-group">
+                <label for="k-file">选择文件</label>
+                <input type="file" id="k-file" accept=".txt,.md,.csv" style="padding: 8px;">
+                <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                    支持 .txt, .md, .csv 格式，最大 5MB
+                </small>
+            </div>
+            <button type="submit" class="btn-primary">上传并处理</button>
+        </form>
+
         <div id="process-result" class="result-box" style="display:none;"></div>
     </div>
 
