@@ -4,8 +4,10 @@
 
 from .character_loader import CharacterLoader
 from .knowledge_loader import KnowledgeLoader
+from .prompt_builder import PromptBuilder
 
 __all__ = [
     "CharacterLoader",
     "KnowledgeLoader",
+    "PromptBuilder",
 ]
