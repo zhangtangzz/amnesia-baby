@@ -850,7 +850,275 @@
 - 完整测试套件 (117个测试，覆盖率95%)
 
 **下一步**:
-- Sprint-4: 待定
+- Sprint-4: 向量检索
+
+---
+
+## Sprint-4 向量检索 MVP
+
+#### Task 1: 向量嵌入服务 ✅
+
+**完成时间**: 2026-06-09 19:00
+
+**完成内容**:
+- 创建 src/vector/__init__.py (向量检索模块入口)
+- 创建 src/vector/embedding.py (向量嵌入服务)
+- 创建 tests/vector/__init__.py (向量检索测试包)
+- 创建 tests/vector/test_embedding.py (向量嵌入服务测试)
+
+**技术细节**:
+- 实现 EmbeddingService 类
+- 实现 embed() 方法，将文本转换为向量
+- 实现 embed_batch() 方法，批量向量化
+- 使用 MD5 哈希生成确定性向量
+- 支持自定义向量维度（默认128）
+- 支持空文本处理
+
+**测试结果**:
+- test_service_initialization: PASS
+- test_embed_returns_vector: PASS
+- test_embed_consistency: PASS
+- test_embed_different_texts: PASS
+- test_embed_empty_text: PASS
+
+**下一步**:
+- Task 2: 向量存储器
+
+---
+
+#### Task 2: 向量存储器 ✅
+
+**完成时间**: 2026-06-09 19:05
+
+**完成内容**:
+- 创建 src/vector/store.py (向量存储器)
+- 创建 tests/vector/test_store.py (向量存储器测试)
+- 更新 src/vector/__init__.py (导出 VectorStore)
+- 安装 numpy 依赖包
+
+**技术细节**:
+- 实现 VectorStore 类
+- 实现 add() 方法，添加向量
+- 实现 search() 方法，搜索相似向量
+- 实现 delete() 方法，删除向量
+- 实现 count() 方法，获取向量数量
+- 使用余弦相似度计算向量相似度
+- 支持元数据存储
+
+**测试结果**:
+- test_store_initialization: PASS
+- test_add_vector: PASS
+- test_search_vector: PASS
+- test_search_empty_store: PASS
+- test_delete_vector: PASS
+
+**下一步**:
+- Task 3: 语义搜索器
+
+---
+
+#### Task 3: 语义搜索器 ✅
+
+**完成时间**: 2026-06-09 19:10
+
+**完成内容**:
+- 创建 src/vector/search.py (语义搜索器)
+- 创建 tests/vector/test_search.py (语义搜索器测试)
+- 更新 src/vector/__init__.py (导出 SemanticSearch)
+
+**技术细节**:
+- 实现 SemanticSearch 类
+- 实现 add_document() 方法，添加文档
+- 实现 search() 方法，语义搜索
+- 实现 add_documents() 方法，批量添加文档
+- 集成 EmbeddingService 和 VectorStore
+
+**测试结果**:
+- test_search_initialization: PASS
+- test_search_returns_results: PASS
+- test_search_empty_query: PASS
+- test_search_no_results: PASS
+- test_search_multiple_results: PASS
+
+**下一步**:
+- Task 4: 相似度计算
+
+---
+
+#### Task 4: 相似度计算 ✅
+
+**完成时间**: 2026-06-09 19:15
+
+**完成内容**:
+- 创建 src/vector/similarity.py (相似度计算)
+- 创建 tests/vector/test_similarity.py (相似度计算测试)
+- 更新 src/vector/__init__.py (导出 SimilarityCalculator)
+
+**技术细节**:
+- 实现 SimilarityCalculator 类
+- 实现 cosine_similarity() 方法，计算余弦相似度
+- 实现 euclidean_distance() 方法，计算欧氏距离
+- 实现 manhattan_distance() 方法，计算曼哈顿距离
+- 使用 numpy 进行向量计算
+
+**测试结果**:
+- test_cosine_similarity: PASS
+- test_cosine_similarity_orthogonal: PASS
+- test_cosine_similarity_opposite: PASS
+- test_euclidean_distance: PASS
+- test_manhattan_distance: PASS
+
+**下一步**:
+- Task 5: 检索排序器
+
+---
+
+#### Task 5: 检索排序器 ✅
+
+**完成时间**: 2026-06-09 19:20
+
+**完成内容**:
+- 创建 src/vector/ranker.py (检索排序器)
+- 创建 tests/vector/test_ranker.py (检索排序器测试)
+- 更新 src/vector/__init__.py (导出 SearchRanker)
+
+**技术细节**:
+- 实现 SearchRanker 类
+- 实现 rank() 方法，对结果进行排序
+- 支持阈值过滤
+- 支持 top_k 限制
+- 按分数降序排序
+
+**测试结果**:
+- test_ranker_initialization: PASS
+- test_rank_by_score: PASS
+- test_rank_with_threshold: PASS
+- test_rank_empty_results: PASS
+- test_rank_with_top_k: PASS
+
+**下一步**:
+- Task 6: 向量检索服务
+
+---
+
+#### Task 6: 向量检索服务 ✅
+
+**完成时间**: 2026-06-09 19:25
+
+**完成内容**:
+- 创建 src/vector/service.py (向量检索服务)
+- 创建 src/vector/models.py (向量检索数据模型)
+- 创建 tests/vector/test_service.py (向量检索服务测试)
+- 更新 src/vector/__init__.py (导出 VectorSearchService, SearchResult)
+
+**技术细节**:
+- 实现 VectorSearchService 类
+- 实现 add_document() 方法，添加文档
+- 实现 add_documents() 方法，批量添加文档
+- 实现 search() 方法，语义搜索
+- 实现 delete_document() 方法，删除文档
+- 实现 count() 方法，获取文档数量
+- 集成所有组件：EmbeddingService, VectorStore, SemanticSearch, SearchRanker
+- 实现 SearchResult 数据模型
+
+**测试结果**:
+- test_service_initialization: PASS
+- test_add_document: PASS
+- test_search_returns_results: PASS
+- test_search_empty_query: PASS
+- test_delete_document: PASS
+- test_search_with_threshold: PASS
+
+**下一步**:
+- Task 7: 集成测试
+
+---
+
+#### Task 7: 集成测试 ✅
+
+**完成时间**: 2026-06-09 19:30
+
+**完成内容**:
+- 创建 tests/integration/test_vector_pipeline.py (向量检索流水线集成测试)
+
+**技术细节**:
+- 实现 TestVectorPipeline 类
+- 实现 test_full_pipeline() 方法，测试完整向量检索流水线
+- 验证 VectorSearchService 的集成
+- 验证文档添加、搜索、删除的完整流程
+
+**测试结果**:
+- test_full_pipeline: PASS
+
+**下一步**:
+- Task 8: 运行所有测试并生成覆盖率报告
+
+---
+
+#### Task 8: 运行所有测试并生成覆盖率报告 ✅
+
+**完成时间**: 2026-06-09 19:35
+
+**完成内容**:
+- 运行所有测试 (149 个测试)
+- 生成覆盖率报告
+
+**测试结果**:
+- 总测试数: 149
+- 通过: 149
+- 失败: 0
+- 错误: 0
+
+**覆盖率报告**:
+- 总覆盖率: 96%
+- src/vector/embedding.py: 94%
+- src/vector/store.py: 97%
+- src/vector/search.py: 100%
+- src/vector/similarity.py: 95%
+- src/vector/ranker.py: 100%
+- src/vector/service.py: 100%
+- src/vector/models.py: 100%
+- src/knowledge/: 69-100%
+- src/chat/: 86-100%
+- src/personality/: 100%
+
+**Sprint-4 完成状态**:
+✅ 所有 Task 完成
+✅ 所有测试通过
+✅ 覆盖率达到 96% (超过 80% 要求)
+✅ 向量检索功能正常
+✅ 文档同步更新
+
+---
+
+## Sprint-4 完成总结
+
+**完成时间**: 2026-06-09 19:35
+
+**总耗时**: 约 35 分钟
+
+**完成任务**:
+1. ✅ Task 1: 向量嵌入服务
+2. ✅ Task 2: 向量存储器
+3. ✅ Task 3: 语义搜索器
+4. ✅ Task 4: 相似度计算
+5. ✅ Task 5: 检索排序器
+6. ✅ Task 6: 向量检索服务
+7. ✅ Task 7: 集成测试
+8. ✅ Task 8: 运行所有测试并生成覆盖率报告
+
+**核心交付物**:
+- EmbeddingService (向量嵌入服务)
+- VectorStore (向量存储器)
+- SemanticSearch (语义搜索器)
+- SimilarityCalculator (相似度计算)
+- SearchRanker (检索排序器)
+- VectorSearchService (向量检索服务)
+- SearchResult (搜索结果模型)
+- 完整测试套件 (149个测试，覆盖率96%)
+
+**下一步**:
+- Sprint-5: 待定
 
 ## 记录格式
 
