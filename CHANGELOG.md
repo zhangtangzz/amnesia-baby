@@ -567,6 +567,291 @@
 **下一步**:
 - Sprint-3: 知识库
 
+---
+
+## Sprint-3 知识库 MVP
+
+#### Task 1: 知识库数据结构 ✅
+
+**完成时间**: 2026-06-09 18:15
+
+**完成内容**:
+- 创建 src/knowledge/__init__.py (知识库模块入口)
+- 创建 src/knowledge/models.py (知识库数据模型)
+- 创建 tests/knowledge/__init__.py (知识库测试包)
+- 创建 tests/knowledge/test_models.py (知识库数据模型测试)
+
+**技术细节**:
+- 使用 Pydantic BaseModel 定义数据模型
+- 实现 KnowledgeProfile (基础信息)
+- 实现 Relationship (人物关系)
+- 实现 Event (重要事件)
+- 实现 Belief (观点体系)
+- 实现 Fact (事实库)
+- 实现 Timeline (人生时间轴)
+- 实现 Evidence (证据库)
+- 实现 KnowledgeBase (知识库容器)
+- 实现 RelationshipType 和 SourceType 枚举
+- 支持字段验证 (亲密度、影响度、置信度范围 0.0 ~ 1.0)
+
+**测试结果**:
+- test_knowledge_profile_creation: PASS
+- test_relationship_creation: PASS
+- test_event_creation: PASS
+- test_belief_creation: PASS
+- test_fact_creation: PASS
+- test_timeline_creation: PASS
+- test_evidence_creation: PASS
+- test_knowledge_base_creation: PASS
+- test_relationship_closeness_validation: PASS
+- test_event_impact_validation: PASS
+- test_belief_confidence_validation: PASS
+- test_fact_confidence_validation: PASS
+- test_evidence_confidence_validation: PASS
+
+**下一步**:
+- Task 2: 知识提取器实现
+
+---
+
+#### Task 2: 知识提取器实现 ✅
+
+**完成时间**: 2026-06-09 18:20
+
+**完成内容**:
+- 创建 src/knowledge/extractor.py (知识提取器)
+- 创建 tests/knowledge/test_extractor.py (知识提取器测试)
+- 更新 src/knowledge/__init__.py (导出 KnowledgeExtractor)
+
+**技术细节**:
+- 实现 KnowledgeExtractor 类
+- 实现 extract() 方法，从文本中提取知识
+- 实现 _extract_profile() 方法，提取基础信息
+- 实现 _extract_facts() 方法，提取事实
+- 实现 _extract_evidence() 方法，提取证据
+- 使用关键词匹配提取姓名、教育背景、职业
+- 支持异步调用
+
+**测试结果**:
+- test_extractor_initialization: PASS
+- test_extract_returns_knowledge_base: PASS
+- test_extract_profile: PASS
+- test_extract_facts: PASS
+- test_extract_evidence: PASS
+- test_extract_empty_text: PASS
+
+**下一步**:
+- Task 3: 知识存储器实现
+
+---
+
+#### Task 3: 知识存储器实现 ✅
+
+**完成时间**: 2026-06-09 18:25
+
+**完成内容**:
+- 创建 src/knowledge/store.py (知识存储器)
+- 创建 tests/knowledge/test_store.py (知识存储器测试)
+- 更新 src/knowledge/__init__.py (导出 KnowledgeStore)
+
+**技术细节**:
+- 实现 KnowledgeStore 类
+- 实现 save() 方法，保存知识库
+- 实现 load() 方法，加载知识库
+- 实现 delete() 方法，删除知识库
+- 实现 exists() 方法，检查知识库是否存在
+- 使用内存存储（简化版本）
+- 支持异步调用
+
+**测试结果**:
+- test_store_initialization: PASS
+- test_save_knowledge_base: PASS
+- test_load_knowledge_base: PASS
+- test_load_nonexistent_character: PASS
+- test_save_and_load_consistency: PASS
+
+**下一步**:
+- Task 4: 知识查询器实现
+
+---
+
+#### Task 4: 知识查询器实现 ✅
+
+**完成时间**: 2026-06-09 18:30
+
+**完成内容**:
+- 创建 src/knowledge/query.py (知识查询器)
+- 创建 tests/knowledge/test_query.py (知识查询器测试)
+- 更新 src/knowledge/__init__.py (导出 KnowledgeQuery)
+
+**技术细节**:
+- 实现 KnowledgeQuery 类
+- 实现 search_facts() 方法，搜索事实
+- 实现 get_facts_by_category() 方法，按类别获取事实
+- 实现 get_profile() 方法，获取基础信息
+- 使用关键词匹配搜索
+
+**测试结果**:
+- test_query_initialization: PASS
+- test_search_facts: PASS
+- test_search_facts_no_match: PASS
+- test_get_facts_by_category: PASS
+- test_get_facts_by_category_no_match: PASS
+- test_get_profile: PASS
+
+**下一步**:
+- Task 5: 知识更新器实现
+
+---
+
+#### Task 5: 知识更新器实现 ✅
+
+**完成时间**: 2026-06-09 18:35
+
+**完成内容**:
+- 创建 src/knowledge/updater.py (知识更新器)
+- 创建 tests/knowledge/test_updater.py (知识更新器测试)
+- 更新 src/knowledge/__init__.py (导出 KnowledgeUpdater)
+
+**技术细节**:
+- 实现 KnowledgeUpdater 类
+- 实现 update_profile() 方法，更新基础信息
+- 实现 add_fact() 方法，添加事实
+- 实现 update_fact_confidence() 方法，更新事实置信度
+- 支持索引验证
+
+**测试结果**:
+- test_updater_initialization: PASS
+- test_update_profile: PASS
+- test_add_fact: PASS
+- test_update_fact_confidence: PASS
+- test_update_fact_confidence_invalid_index: PASS
+
+**下一步**:
+- Task 6: 知识服务实现
+
+---
+
+#### Task 6: 知识服务实现 ✅
+
+**完成时间**: 2026-06-09 18:40
+
+**完成内容**:
+- 创建 src/knowledge/service.py (知识服务)
+- 创建 tests/knowledge/test_service.py (知识服务测试)
+- 更新 src/knowledge/__init__.py (导出 KnowledgeService)
+
+**技术细节**:
+- 实现 KnowledgeService 类
+- 实现 process() 方法，处理文本提取知识
+- 实现 save() 方法，保存知识库
+- 实现 load() 方法，加载知识库
+- 实现 query_facts() 方法，查询事实
+- 集成 KnowledgeExtractor, KnowledgeStore, KnowledgeQuery
+- 支持错误处理
+
+**测试结果**:
+- test_service_initialization: PASS
+- test_process_returns_knowledge_base: PASS
+- test_process_saves_to_store: PASS
+- test_query_facts: PASS
+- test_load_nonexistent_character: PASS
+
+**下一步**:
+- Task 7: 集成测试
+
+---
+
+#### Task 7: 集成测试 ✅
+
+**完成时间**: 2026-06-09 18:45
+
+**完成内容**:
+- 创建 tests/integration/test_knowledge_pipeline.py (知识库流水线集成测试)
+
+**技术细节**:
+- 实现 TestKnowledgePipeline 类
+- 实现 test_full_pipeline() 方法，测试完整知识库流水线
+- 验证 KnowledgeService 的集成
+- 验证文本处理、知识提取、存储、查询的完整流程
+
+**测试结果**:
+- test_full_pipeline: PASS
+
+**下一步**:
+- Task 8: 运行所有测试并生成覆盖率报告
+
+---
+
+#### Task 8: 运行所有测试并生成覆盖率报告 ✅
+
+**完成时间**: 2026-06-09 18:50
+
+**完成内容**:
+- 运行所有测试 (117 个测试)
+- 生成覆盖率报告
+
+**测试结果**:
+- 总测试数: 117
+- 通过: 117
+- 失败: 0
+- 错误: 0
+
+**覆盖率报告**:
+- 总覆盖率: 95%
+- src/knowledge/models.py: 100%
+- src/knowledge/extractor.py: 95%
+- src/knowledge/store.py: 69%
+- src/knowledge/query.py: 100%
+- src/knowledge/updater.py: 100%
+- src/knowledge/service.py: 96%
+- src/chat/: 86-100%
+- src/personality/: 100%
+- src/material/: 100%
+
+**Sprint-3 完成状态**:
+✅ 所有 Task 完成
+✅ 所有测试通过
+✅ 覆盖率达到 95% (超过 80% 要求)
+✅ 知识库功能正常
+✅ 文档同步更新
+
+---
+
+## Sprint-3 完成总结
+
+**完成时间**: 2026-06-09 18:50
+
+**总耗时**: 约 35 分钟
+
+**完成任务**:
+1. ✅ Task 1: 知识库数据结构
+2. ✅ Task 2: 知识提取器实现
+3. ✅ Task 3: 知识存储器实现
+4. ✅ Task 4: 知识查询器实现
+5. ✅ Task 5: 知识更新器实现
+6. ✅ Task 6: 知识服务实现
+7. ✅ Task 7: 集成测试
+8. ✅ Task 8: 运行所有测试并生成覆盖率报告
+
+**核心交付物**:
+- KnowledgeProfile (基础信息)
+- Relationship (人物关系)
+- Event (重要事件)
+- Belief (观点体系)
+- Fact (事实库)
+- Timeline (人生时间轴)
+- Evidence (证据库)
+- KnowledgeExtractor (知识提取器)
+- KnowledgeStore (知识存储器)
+- KnowledgeQuery (知识查询器)
+- KnowledgeUpdater (知识更新器)
+- KnowledgeService (知识服务)
+- 完整测试套件 (117个测试，覆盖率95%)
+
+**下一步**:
+- Sprint-4: 待定
+
 ## 记录格式
 
 每次完成新功能后，按以下格式记录：
