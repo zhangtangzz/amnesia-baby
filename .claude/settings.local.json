@@ -61,7 +61,11 @@
       "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8003)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/chat/test_character_store.py -v)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/api/test_characters.py -v)",
-      "Bash(./venv/Scripts/python.exe -m pytest tests/chat/test_character_loader.py -v)"
+      "Bash(./venv/Scripts/python.exe -m pytest tests/chat/test_character_loader.py -v)",
+      "Bash('C:\\\\Users\\\\张亮亮\\\\Desktop\\\\失忆宝宝项目\\\\venv\\\\Scripts\\\\pip.exe' install *)",
+      "Bash(./venv/Scripts/python.exe -c \"import aiosqlite; print\\(aiosqlite.__version__\\)\")",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/api/test_characters.py::TestCharactersAPI::test_create_character -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/api/test_characters.py::TestCharactersAPI::test_create_character -v -s)"
     ]
   }
 }

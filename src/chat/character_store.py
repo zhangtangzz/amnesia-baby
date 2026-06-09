@@ -1,23 +1,32 @@
 """
 角色存储
 
-管理角色的创建、查询、更新、删除
+管理角色的创建、查询、更新、删除，支持持久化
 """
 
 from typing import Dict, Any, List, Optional
 from datetime import datetime
+from ..storage.database import save_json, load_json
 
 
 class CharacterStore:
     """
     角色存储器
 
-    内存存储角色数据，支持 CRUD 操作
+    内存存储 + JSON 文件持久化
     """
 
-    def __init__(self):
-        """初始化"""
+    def __init__(self, persist: bool = True):
+        """
+        初始化
+
+        Args:
+            persist: 是否持久化到文件
+        """
+        self._persist = persist
         self._storage: Dict[str, Dict[str, Any]] = {}
+        if persist:
+            self._load_from_file()
 
     def create(
         self,
@@ -55,6 +64,7 @@ class CharacterStore:
             "created_at": datetime.now().isoformat(),
         }
         self._storage[character_id] = char
+        self._save_to_file()
         return char
 
     def get(self, character_id: str) -> Optional[Dict[str, Any]]:
@@ -82,12 +92,14 @@ class CharacterStore:
         for key, value in kwargs.items():
             if key in char and key != "character_id":
                 char[key] = value
+        self._save_to_file()
         return char
 
     def delete(self, character_id: str) -> bool:
         """删除角色"""
         if character_id in self._storage:
             del self._storage[character_id]
+            self._save_to_file()
             return True
         return False
 
@@ -113,3 +125,14 @@ class CharacterStore:
             description="普通创业者",
             personality={"achievement_drive": 0.7, "curiosity": 0.6, "empathy": 0.7},
         )
+
+    def _save_to_file(self):
+        """保存到文件"""
+        if self._persist:
+            save_json("characters", self._storage)
+
+    def _load_from_file(self):
+        """从文件加载"""
+        data = load_json("characters")
+        if data and isinstance(data, dict):
+            self._storage = data

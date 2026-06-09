@@ -38,8 +38,10 @@ class TestCharactersAPI:
 
     def test_create_character(self, client):
         """测试创建角色"""
+        import time
+        uid = "test_" + str(int(time.time() * 1000))[-6:]
         response = client.post("/api/characters/create", json={
-            "character_id": "test_new",
+            "character_id": uid,
             "name": "新角色",
             "avatar": "🎭",
             "description": "测试新建角色",

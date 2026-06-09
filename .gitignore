@@ -35,6 +35,9 @@ ENV/
 .env
 .env.local
 
+# Data
+data/
+
 # Testing
 .coverage
 htmlcov/
