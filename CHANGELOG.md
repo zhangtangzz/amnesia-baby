@@ -189,6 +189,37 @@
 
 ---
 
+#### Task 7: Text Material Parser 实现 ✅
+
+**完成时间**: 2026-06-09 13:15
+
+**完成内容**:
+- 创建 src/material/__init__.py (素材模块入口)
+- 创建 src/material/text_parser.py (TextMaterialParser 实现)
+- 创建 tests/material/test_text_parser.py (TextMaterialParser 测试)
+
+**技术细节**:
+- 实现 TextMaterialParser 类
+- 实现 parse() 方法，接收文本和来源，返回证据列表
+- 使用关键词映射到人格维度
+- 实现 10 种人格维度的关键词映射
+- 使用加权算法计算分数和置信度
+- 支持异步调用
+
+**测试结果**:
+- test_parser_initialization: PASS
+- test_parse_returns_evidence_list: PASS
+- test_parse_with_source: PASS
+- test_parse_empty_text: PASS
+- test_parse_validates_trait: PASS
+- test_parse_validates_score: PASS
+- test_parse_validates_confidence: PASS
+
+**下一步**:
+- Task 8: 集成测试
+
+---
+
 ## 记录格式
 
 每次完成新功能后，按以下格式记录：
