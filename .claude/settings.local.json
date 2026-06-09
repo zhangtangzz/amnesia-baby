@@ -30,7 +30,27 @@
       "Bash(./venv/Scripts/python.exe -c \"import fastapi; print\\(fastapi.__version__\\)\")",
       "Bash(./venv/Scripts/python.exe -m pytest tests/ --cov=src --cov-report=term-missing -q)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/api/test_app.py::TestAPIApp::test_app_initialization -v)",
-      "Bash(./venv/Scripts/python.exe -m pytest tests/ --cov=src -q)"
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ --cov=src -q)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ --cov=src --cov-report=term -q)",
+      "Bash(./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload)",
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(curl -s http://localhost:8000/)",
+      "Bash(curl -s http://localhost:8000/chat)",
+      "Bash(curl -s http://localhost:8000/api/chat/send -X POST -H \"Content-Type: application/json\" -d '{\"character_id\":\"elon\",\"message\":\"你好\"}')",
+      "Bash(./venv/Scripts/python.exe -c \"import anthropic; print\\(anthropic.__version__\\)\")",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/llm/test_xiaomi_provider.py -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ -q)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/integration/test_llm_pipeline.py::TestLLMPipeline::test_chat_mock_mode -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/integration/test_llm_pipeline.py::TestLLMPipeline::test_chat_mock_mode -v -s)",
+      "Bash(pkill -f uvicorn)",
+      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -c ' *)",
+      "Bash(pkill -9 -f uvicorn)",
+      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8000)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :8000)",
+      "Bash(findstr LISTENING)",
+      "Bash(taskkill //F //PID 86296 //PID 13396 //PID 54284)",
+      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8001)"
     ]
   }
 }

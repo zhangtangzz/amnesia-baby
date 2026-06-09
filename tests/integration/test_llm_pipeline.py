@@ -17,20 +17,25 @@ class TestLLMPipeline:
         """创建测试客户端"""
         return TestClient(app)
 
+    def _mock_settings(self):
+        """创建 mock 设置对象（所有 key 为空）"""
+        return type("S", (), {
+            "llm_provider": "openai",
+            "llm_model": "gpt-3.5-turbo",
+            "llm_max_retries": 3,
+            "llm_fallback_provider": "",
+            "openai_api_key": "",
+            "deepseek_api_key": "",
+            "qwen_api_key": "",
+            "xiaomi_api_key": "",
+            "xiaomi_api_base": "https://token-plan-cn.xiaomimimo.com/anthropic",
+            "xiaomi_model": "mimo-v2.5-pro",
+        })()
+
     def test_chat_mock_mode(self, client):
         """测试聊天 mock 模式（无 API Key 时返回 mock）"""
-        # 清空所有 API Key 确保走 mock 模式
         with patch("src.api.routes.chat.get_settings") as mock_settings:
-            mock_s = type("S", (), {
-                "llm_provider": "openai",
-                "llm_model": "gpt-3.5-turbo",
-                "llm_max_retries": 3,
-                "llm_fallback_provider": "",
-                "openai_api_key": "",
-                "deepseek_api_key": "",
-                "qwen_api_key": "",
-            })()
-            mock_settings.return_value = mock_s
+            mock_settings.return_value = self._mock_settings()
 
             response = client.post("/api/chat/send", json={
                 "character_id": "elon",
@@ -45,16 +50,7 @@ class TestLLMPipeline:
     def test_chat_with_provider_param(self, client):
         """测试指定 provider 参数（mock 模式）"""
         with patch("src.api.routes.chat.get_settings") as mock_settings:
-            mock_s = type("S", (), {
-                "llm_provider": "openai",
-                "llm_model": "gpt-3.5-turbo",
-                "llm_max_retries": 3,
-                "llm_fallback_provider": "",
-                "openai_api_key": "",
-                "deepseek_api_key": "",
-                "qwen_api_key": "",
-            })()
-            mock_settings.return_value = mock_s
+            mock_settings.return_value = self._mock_settings()
 
             response = client.post("/api/chat/send", json={
                 "character_id": "elon",
@@ -82,16 +78,7 @@ class TestLLMPipeline:
 
         # 2. 发送聊天消息
         with patch("src.api.routes.chat.get_settings") as mock_settings:
-            mock_s = type("S", (), {
-                "llm_provider": "openai",
-                "llm_model": "gpt-3.5-turbo",
-                "llm_max_retries": 3,
-                "llm_fallback_provider": "",
-                "openai_api_key": "",
-                "deepseek_api_key": "",
-                "qwen_api_key": "",
-            })()
-            mock_settings.return_value = mock_s
+            mock_settings.return_value = self._mock_settings()
 
             chat_response = client.post("/api/chat/send", json={
                 "character_id": "elon",

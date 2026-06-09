@@ -9,6 +9,7 @@ from .models import TokenUsage, LLMResponse
 from .openai_provider import OpenAIProvider
 from .deepseek_provider import DeepSeekProvider
 from .qwen_provider import QwenProvider
+from .xiaomi_provider import XiaomiProvider
 from .router import LLMRouter
 from .retry import RetryableLLMProvider
 from .token_tracker import TokenTracker

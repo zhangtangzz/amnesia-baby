@@ -18,10 +18,12 @@ def _register_defaults():
     from .openai_provider import OpenAIProvider
     from .deepseek_provider import DeepSeekProvider
     from .qwen_provider import QwenProvider
+    from .xiaomi_provider import XiaomiProvider
 
     _PROVIDER_REGISTRY["openai"] = OpenAIProvider
     _PROVIDER_REGISTRY["deepseek"] = DeepSeekProvider
     _PROVIDER_REGISTRY["qwen"] = QwenProvider
+    _PROVIDER_REGISTRY["xiaomi"] = XiaomiProvider
 
 
 class LLMRouter:

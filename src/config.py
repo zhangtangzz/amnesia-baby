@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     qwen_api_key: str = ""
     qwen_api_base: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
+    # 小米 MIMO 配置
+    xiaomi_api_key: str = ""
+    xiaomi_api_base: str = "https://token-plan-cn.xiaomimimo.com/anthropic"
+    xiaomi_model: str = "mimo-v2.5-pro"
+
     # 应用配置
     app_env: str = "development"
     app_debug: bool = True

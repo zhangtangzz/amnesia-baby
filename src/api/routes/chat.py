@@ -37,24 +37,39 @@ def _get_llm_router(provider: str = None, model: str = None) -> RetryableLLMProv
         "openai": settings.openai_api_key,
         "deepseek": settings.deepseek_api_key,
         "qwen": settings.qwen_api_key,
+        "xiaomi": settings.xiaomi_api_key,
     }
     api_key = api_keys.get(provider_name, settings.openai_api_key)
 
-    router_instance = LLMRouter(
-        default_provider=provider_name,
-        api_key=api_key,
-        model=model or settings.llm_model,
-    )
+    # 小米使用独立配置
+    if provider_name == "xiaomi":
+        from src.llm.xiaomi_provider import XiaomiProvider
+        llm_provider = XiaomiProvider(
+            api_key=api_key,
+            base_url=settings.xiaomi_api_base,
+            model=model or settings.xiaomi_model,
+        )
+    else:
+        router_instance = LLMRouter(
+            default_provider=provider_name,
+            api_key=api_key,
+            model=model or settings.llm_model,
+        )
+        llm_provider = router_instance.get_provider()
 
     # 创建降级提供商（如果配置了）
     fallback = None
     if settings.llm_fallback_provider and settings.llm_fallback_provider != provider_name:
         fallback_key = api_keys.get(settings.llm_fallback_provider, "")
         if fallback_key:
-            fallback = router_instance.get_provider(settings.llm_fallback_provider)
+            fallback_router = LLMRouter(
+                default_provider=settings.llm_fallback_provider,
+                api_key=fallback_key,
+            )
+            fallback = fallback_router.get_provider()
 
     return RetryableLLMProvider(
-        provider=router_instance.get_provider(),
+        provider=llm_provider,
         max_retries=settings.llm_max_retries,
         fallback_provider=fallback,
     )
@@ -79,6 +94,7 @@ async def send_message(request: ChatRequest):
             "openai": settings.openai_api_key,
             "deepseek": settings.deepseek_api_key,
             "qwen": settings.qwen_api_key,
+            "xiaomi": settings.xiaomi_api_key,
         }
         provider_name = request.provider or settings.llm_provider
         has_api_key = bool(api_keys.get(provider_name, ""))
