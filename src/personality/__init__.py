@@ -6,6 +6,7 @@ from .profile import PersonalityProfile
 from .big_five import BigFiveProfile
 from .enneagram import EnneagramProfile
 from .evidence import PersonalityEvidence, PersonalityTrait
+from .agent import PersonalityAgent
 
 __all__ = [
     "PersonalityProfile",
@@ -13,4 +14,5 @@ __all__ = [
     "EnneagramProfile",
     "PersonalityEvidence",
     "PersonalityTrait",
+    "PersonalityAgent",
 ]
