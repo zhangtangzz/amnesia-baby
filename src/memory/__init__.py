@@ -8,6 +8,7 @@ from .long_term import LongTermMemory
 from .consolidator import MemoryConsolidator
 from .context import ContextBuilder
 from .retriever import MemoryRetriever
+from .service import MemoryService
 
 __all__ = [
     "MemoryItem",
@@ -16,4 +17,5 @@ __all__ = [
     "MemoryConsolidator",
     "ContextBuilder",
     "MemoryRetriever",
+    "MemoryService",
 ]
