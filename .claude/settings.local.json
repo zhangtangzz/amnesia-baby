@@ -10,7 +10,10 @@
       "Bash(./venv/Scripts/python.exe -m pytest tests/memory/test_context.py -v)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/memory/test_retriever.py -v)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/memory/test_service.py -v)",
-      "Bash(./venv/Scripts/python.exe -m pytest tests/ -v)"
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/api/test_chat.py -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/integration/test_api_pipeline.py -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ -v --cov=src --cov-report=term-missing)"
     ]
   }
 }

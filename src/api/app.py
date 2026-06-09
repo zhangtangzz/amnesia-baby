@@ -23,6 +23,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 注册路由
+from src.api.routes.personality import router as personality_router
+from src.api.routes.chat import router as chat_router
+from src.api.routes.knowledge import router as knowledge_router
+from src.api.routes.memory import router as memory_router
+from src.api.routes.vector import router as vector_router
+app.include_router(personality_router)
+app.include_router(chat_router)
+app.include_router(knowledge_router)
+app.include_router(memory_router)
+app.include_router(vector_router)
+
 
 @app.get("/")
 async def root():
