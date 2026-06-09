@@ -50,7 +50,12 @@
       "Bash(findstr :8000)",
       "Bash(findstr LISTENING)",
       "Bash(taskkill //F //PID 86296 //PID 13396 //PID 54284)",
-      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8001)"
+      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8001)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/chat/test_chat_engine.py -v)",
+      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8002)"
     ]
   }
 }
