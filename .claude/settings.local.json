@@ -3,7 +3,9 @@
     "allow": [
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(./venv/Scripts/python.exe -m pytest tests/knowledge/test_store.py -v)"
+      "Bash(./venv/Scripts/python.exe -m pytest tests/knowledge/test_store.py -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/vector/test_search.py -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ --cov=src --cov-report=term-missing)"
     ]
   }
 }
