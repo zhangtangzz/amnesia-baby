@@ -368,6 +368,35 @@
 **下一步**:
 - Task 3: PromptBuilder 实现
 
+---
+
+#### Task 3: PromptBuilder 实现 ✅
+
+**完成时间**: 2026-06-09 13:32
+
+**完成内容**:
+- 创建 src/chat/prompt_builder.py (PromptBuilder 实现)
+- 创建 tests/chat/test_prompt_builder.py (PromptBuilder 测试)
+- 更新 src/chat/__init__.py (导出 PromptBuilder)
+
+**技术细节**:
+- 实现 PromptBuilder 类
+- 实现 build() 方法，构建角色聊天 Prompt
+- 实现 _build_personality_description() 方法，构建人格描述
+- 实现 _build_knowledge_description() 方法，构建知识描述
+- 支持人格信息、知识信息和用户消息的整合
+
+**测试结果**:
+- test_builder_initialization: PASS
+- test_build_returns_prompt: PASS
+- test_build_includes_personality: PASS
+- test_build_includes_knowledge: PASS
+- test_build_includes_message: PASS
+- test_build_empty_knowledge: PASS
+
+**下一步**:
+- Task 4: LLMService 实现
+
 ## 记录格式
 
 每次完成新功能后，按以下格式记录：
