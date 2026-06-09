@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}角色聊天 - 失忆宝宝{% endblock %}
+{% block content %}
+<div class="chat-container">
+    <div class="chat-sidebar">
+        <h3>选择角色</h3>
+        <div class="character-list" id="character-list">
+            <div class="character-item active" data-id="elon" onclick="selectCharacter(this)">
+                <span class="char-avatar">🚀</span>
+                <span class="char-name">Elon Musk</span>
+            </div>
+            <div class="character-item" data-id="zhangsan" onclick="selectCharacter(this)">
+                <span class="char-avatar">👨‍💼</span>
+                <span class="char-name">张三</span>
+            </div>
+        </div>
+        <div class="provider-select">
+            <label>LLM 提供商</label>
+            <select id="provider-select">
+                <option value="">默认</option>
+                <option value="openai">OpenAI</option>
+                <option value="deepseek">DeepSeek</option>
+                <option value="qwen">通义千问</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="chat-main">
+        <div class="chat-header">
+            <span id="current-character">Elon Musk</span>
+            <span class="chat-status" id="chat-status">就绪</span>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="message system">
+                <div class="message-content">欢迎！请选择角色开始对话。</div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <textarea id="message-input" placeholder="输入消息..." rows="2" onkeydown="handleKeyDown(event)"></textarea>
+            <button id="send-btn" onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/chat.js"></script>
+{% endblock %}

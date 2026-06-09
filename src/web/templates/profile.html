@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}角色画像 - 失忆宝宝{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>👤 角色人格画像</h2>
+    <p>查看角色的人格分析结果</p>
+</div>
+
+<div class="profile-layout">
+    <div class="profile-form">
+        <div class="form-group">
+            <label for="p-character-id">角色 ID</label>
+            <div class="input-row">
+                <input type="text" id="p-character-id" value="elon" placeholder="输入角色ID">
+                <button onclick="loadProfile()" class="btn-primary">加载画像</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>人格分析</label>
+            <textarea id="p-text" rows="4" placeholder="输入文本进行人格分析..."></textarea>
+            <button onclick="analyzePersonality()" class="btn-secondary">分析人格</button>
+        </div>
+    </div>
+
+    <div class="profile-display" id="profile-display">
+        <div class="profile-card">
+            <h3>🧠 人格特征</h3>
+            <div id="personality-traits" class="traits-grid">
+                <p class="placeholder">加载角色后显示人格特征</p>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <h3>📊 大五人格</h3>
+            <div id="big-five-chart" class="chart-area">
+                <p class="placeholder">加载角色后显示大五人格</p>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <h3>🔮 九型人格</h3>
+            <div id="enneagram-chart" class="chart-area">
+                <p class="placeholder">加载角色后显示九型人格</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/profile.js"></script>
+{% endblock %}

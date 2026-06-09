@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}知识库 - 失忆宝宝{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>📚 知识库管理</h2>
+    <p>上传素材，系统自动提取知识并结构化存储</p>
+</div>
+
+<div class="knowledge-layout">
+    <div class="upload-section">
+        <h3>上传素材</h3>
+        <form id="knowledge-form" onsubmit="processKnowledge(event)">
+            <div class="form-group">
+                <label for="k-character-id">角色 ID</label>
+                <input type="text" id="k-character-id" value="elon" placeholder="输入角色ID">
+            </div>
+            <div class="form-group">
+                <label for="k-source">素材来源</label>
+                <input type="text" id="k-source" value="用户上传" placeholder="来源描述">
+            </div>
+            <div class="form-group">
+                <label for="k-text">素材内容</label>
+                <textarea id="k-text" rows="8" placeholder="粘贴文本素材..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary">处理素材</button>
+        </form>
+        <div id="process-result" class="result-box" style="display:none;"></div>
+    </div>
+
+    <div class="query-section">
+        <h3>查询知识</h3>
+        <div class="form-group">
+            <label for="q-character-id">角色 ID</label>
+            <input type="text" id="q-character-id" value="elon" placeholder="输入角色ID">
+        </div>
+        <button onclick="queryKnowledge()" class="btn-secondary">查询知识库</button>
+        <div id="knowledge-result" class="result-box"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/knowledge.js"></script>
+{% endblock %}

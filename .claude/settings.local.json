@@ -21,7 +21,16 @@
       "Bash(./venv/Scripts/python.exe -m pytest tests/llm/test_router.py -v)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/llm/test_token_tracker.py -v)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/integration/test_llm_pipeline.py -v)",
-      "Bash(./venv/Scripts/python.exe -c ' *)"
+      "Bash(./venv/Scripts/python.exe -c ' *)",
+      "Bash(./venv/Scripts/python.exe -c \"import jinja2; print\\(jinja2.__version__\\)\")",
+      "Bash(./venv/Scripts/pip.exe install *)",
+      "Bash(./venv/Scripts/python.exe)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/web/test_routes.py -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/web/test_routes.py::TestWebRoutes::test_index_page -v)",
+      "Bash(./venv/Scripts/python.exe -c \"import fastapi; print\\(fastapi.__version__\\)\")",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ --cov=src --cov-report=term-missing -q)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/api/test_app.py::TestAPIApp::test_app_initialization -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ --cov=src -q)"
     ]
   }
 }

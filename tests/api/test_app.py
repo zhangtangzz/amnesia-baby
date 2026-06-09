@@ -12,10 +12,11 @@ class TestAPIApp:
         return TestClient(app)
 
     def test_app_initialization(self, client):
-        """测试应用初始化"""
+        """测试应用初始化（首页为 HTML 页面）"""
         response = client.get("/")
         assert response.status_code == 200
-        assert response.json() == {"message": "失忆宝宝 API"}
+        assert "text/html" in response.headers.get("content-type", "")
+        assert "失忆宝宝" in response.text
 
     def test_health_check(self, client):
         """测试健康检查"""

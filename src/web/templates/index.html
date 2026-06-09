@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}失忆宝宝 - 首页{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1>🧠 失忆宝宝</h1>
+    <p class="hero-subtitle">数字人格重建系统</p>
+    <p class="hero-desc">从素材中重建数字人格，让记忆永不消逝</p>
+</div>
+
+<div class="features">
+    <div class="feature-card" onclick="location.href='/chat'">
+        <div class="feature-icon">💬</div>
+        <h3>角色聊天</h3>
+        <p>与重建的数字人格对话，感受真实的交流体验</p>
+    </div>
+    <div class="feature-card" onclick="location.href='/knowledge'">
+        <div class="feature-icon">📚</div>
+        <h3>知识库</h3>
+        <p>上传素材，系统自动提取知识，构建角色记忆</p>
+    </div>
+    <div class="feature-card" onclick="location.href='/profile'">
+        <div class="feature-icon">👤</div>
+        <h3>人格画像</h3>
+        <p>查看角色的人格分析结果，了解性格特征</p>
+    </div>
+</div>
+
+<div class="stats-bar">
+    <div class="stat">
+        <span class="stat-value" id="stat-characters">0</span>
+        <span class="stat-label">角色</span>
+    </div>
+    <div class="stat">
+        <span class="stat-value" id="stat-knowledge">0</span>
+        <span class="stat-label">知识条目</span>
+    </div>
+    <div class="stat">
+        <span class="stat-value" id="stat-messages">0</span>
+        <span class="stat-label">对话数</span>
+    </div>
+</div>
+{% endblock %}
