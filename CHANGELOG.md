@@ -125,6 +125,39 @@
 
 ---
 
+#### Task 5: PersonalityEvidence 数据模型 ✅
+
+**完成时间**: 2026-06-09 13:08
+
+**完成内容**:
+- 创建 src/personality/evidence.py (PersonalityEvidence 数据模型)
+- 创建 tests/personality/test_evidence.py (PersonalityEvidence 测试)
+- 更新 src/personality/__init__.py (导出 PersonalityEvidence, PersonalityTrait)
+
+**技术细节**:
+- 使用 Pydantic BaseModel 定义数据模型
+- 实现 PersonalityTrait 枚举 (10种人格维度)
+- 实现 PersonalityEvidence 数据模型
+- 字段：trait, score, evidence, source, confidence, metadata
+- 支持 trait 枚举验证
+- 支持 score 和 confidence 范围验证 (0.0 ~ 1.0)
+- 支持序列化、反序列化、JSON 导出
+
+**测试结果**:
+- test_create_evidence_with_valid_data: PASS
+- test_create_evidence_with_metadata: PASS
+- test_invalid_trait_validation: PASS
+- test_score_range_validation: PASS
+- test_confidence_range_validation: PASS
+- test_evidence_serialization: PASS
+- test_evidence_deserialization: PASS
+- test_evidence_to_json: PASS
+
+**下一步**:
+- Task 6: Personality Agent 实现
+
+---
+
 ## 记录格式
 
 每次完成新功能后，按以下格式记录：
