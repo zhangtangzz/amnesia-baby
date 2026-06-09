@@ -15,6 +15,7 @@ from .models import (
     SourceType,
 )
 from .extractor import KnowledgeExtractor
+from .store import KnowledgeStore
 
 __all__ = [
     "KnowledgeProfile",
@@ -28,4 +29,5 @@ __all__ = [
     "RelationshipType",
     "SourceType",
     "KnowledgeExtractor",
+    "KnowledgeStore",
 ]
