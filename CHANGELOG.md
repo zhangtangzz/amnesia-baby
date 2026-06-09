@@ -1513,10 +1513,130 @@
 - Sprint-4: 向量检索 MVP ✅
 - Sprint-5: 记忆系统 MVP ✅
 - Sprint-6: API接口层 MVP ✅
+- Sprint-7: 真实LLM集成 MVP ✅
 
 **下一步**:
 - 部署到生产环境
-- 接入真实 LLM 服务
+- 用户界面开发
+
+### Sprint-7 真实LLM集成 MVP
+
+#### Task 22: LLM提供商抽象接口 ✅
+
+**完成时间**: 2026-06-09
+
+**完成内容**:
+- TokenUsage 数据模型（自动计算 total_tokens）
+- LLMResponse 数据模型
+- LLMProvider 抽象基类（ABC），定义 generate() / stream() 接口
+
+**测试结果**: 11 个测试通过
+
+#### Task 23: OpenAI 提供商实现 ✅
+
+**完成时间**: 2026-06-09
+
+**完成内容**:
+- OpenAIProvider 实现，基于 openai SDK
+- 支持自定义 api_key、base_url、model
+- generate() 非流式调用
+- stream() 流式调用
+
+**测试结果**: 6 个测试通过
+
+#### Task 24: 国产LLM提供商实现 ✅
+
+**完成时间**: 2026-06-09
+
+**完成内容**:
+- DeepSeekProvider（继承 OpenAIProvider，默认 deepseek-chat）
+- QwenProvider（继承 OpenAIProvider，默认 qwen-turbo）
+- 均兼容 OpenAI 接口协议
+
+**测试结果**: 10 个测试通过
+
+#### Task 25: LLM路由器 ✅
+
+**完成时间**: 2026-06-09
+
+**完成内容**:
+- LLMRouter 工厂类，支持注册表模式
+- get_provider() 获取提供商实例
+- switch_provider() 运行时切换
+- generate() 委托给当前提供商
+- list_providers() 列出可用提供商
+
+**测试结果**: 8 个测试通过
+
+#### Task 26: 重试与降级机制 ✅
+
+**完成时间**: 2026-06-09
+
+**完成内容**:
+- RetryableLLMProvider 包装器
+- 指数退避重试（base_delay * 2^attempt）
+- 主提供商失败自动降级到备用提供商
+- 可配置最大重试次数
+
+**测试结果**: 6 个测试通过
+
+#### Task 27: 流式响应支持 ✅
+
+**完成时间**: 2026-06-09
+
+**完成内容**:
+- OpenAIProvider.stream() 真正的 SSE 流式输出
+- LLMProvider 基类 stream() 默认回退到 generate()
+- DeepSeek/Qwen 继承 OpenAI 流式能力
+
+**测试结果**: 2 个测试通过
+
+#### Task 28: Token统计 ✅
+
+**完成时间**: 2026-06-09
+
+**完成内容**:
+- TokenTracker 记录每次调用的 token 用量
+- 支持历史记录查询
+- summary() 摘要统计（总数、平均值）
+- reset() 重置统计
+
+**测试结果**: 6 个测试通过
+
+#### Task 29: API更新与集成测试 ✅
+
+**完成时间**: 2026-06-09
+
+**完成内容**:
+- Chat API 支持 provider/model 参数选择
+- 无 API Key 时自动降级为 mock 模式
+- 新增 /api/chat/stats Token统计接口
+- 配置扩展（deepseek/qwen API Key + Base URL）
+
+**测试结果**: 4 个集成测试通过
+
+**Sprint-7 总结**:
+
+**完成任务**:
+1. ✅ Task 22: LLM提供商抽象接口
+2. ✅ Task 23: OpenAI提供商实现
+3. ✅ Task 24: 国产LLM提供商实现
+4. ✅ Task 25: LLM路由器
+5. ✅ Task 26: 重试与降级机制
+6. ✅ Task 27: 流式响应支持
+7. ✅ Task 28: Token统计
+8. ✅ Task 29: API更新与集成测试
+
+**核心交付物**:
+- LLMProvider 抽象基类
+- OpenAI / DeepSeek / Qwen 三个提供商
+- LLMRouter 工厂路由器
+- RetryableLLMProvider 重试降级包装器
+- TokenTracker Token统计器
+- 完整测试套件 (256个测试，覆盖率92%)
+
+**下一步**:
+- 部署到生产环境
 - 用户界面开发
 
 ## 记录格式

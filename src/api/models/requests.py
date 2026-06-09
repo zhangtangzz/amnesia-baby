@@ -17,6 +17,8 @@ class ChatRequest(BaseModel):
     character_id: str = Field(..., description="角色ID")
     message: str = Field(..., description="消息内容")
     context: Optional[str] = Field(default=None, description="上下文")
+    provider: Optional[str] = Field(default=None, description="LLM提供商 (openai/deepseek/qwen)")
+    model: Optional[str] = Field(default=None, description="模型名称")
 
 
 class KnowledgeRequest(BaseModel):
