@@ -339,6 +339,35 @@
 **下一步**:
 - Task 2: KnowledgeLoader 实现
 
+---
+
+#### Task 2: KnowledgeLoader 实现 ✅
+
+**完成时间**: 2026-06-09 13:28
+
+**完成内容**:
+- 创建 src/chat/knowledge_loader.py (KnowledgeLoader 实现)
+- 创建 tests/chat/test_knowledge_loader.py (KnowledgeLoader 测试)
+- 更新 src/chat/__init__.py (导出 KnowledgeLoader)
+
+**技术细节**:
+- 实现 KnowledgeLoader 类
+- 实现 load() 方法，加载角色知识库
+- 实现 _load_from_source() 方法，从数据源加载
+- 支持加载知识列表
+- 支持角色不存在和数据无效的错误处理
+
+**测试结果**:
+- test_loader_initialization: PASS
+- test_load_returns_knowledge: PASS
+- test_load_knowledge_list: PASS
+- test_load_empty_knowledge: PASS
+- test_load_nonexistent_character: PASS
+- test_load_invalid_data: PASS
+
+**下一步**:
+- Task 3: PromptBuilder 实现
+
 ## 记录格式
 
 每次完成新功能后，按以下格式记录：
