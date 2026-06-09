@@ -68,6 +68,34 @@
 
 ---
 
+#### Task 3: BigFiveProfile 数据模型 ✅
+
+**完成时间**: 2026-06-09 13:02
+
+**完成内容**:
+- 创建 src/personality/big_five.py (BigFiveProfile 数据模型)
+- 创建 tests/personality/test_big_five.py (BigFiveProfile 测试)
+- 更新 src/personality/__init__.py (导出 BigFiveProfile)
+
+**技术细节**:
+- 使用 Pydantic BaseModel 定义数据模型
+- 实现 5 个大五人格维度 (openness, conscientiousness, extraversion, agreeableness, neuroticism)
+- 每个字段范围 0.0 ~ 1.0，默认值 0.5
+- 支持序列化、反序列化、JSON 导出
+
+**测试结果**:
+- test_create_profile_with_valid_data: PASS
+- test_create_profile_with_default_values: PASS
+- test_score_range_validation: PASS
+- test_profile_serialization: PASS
+- test_profile_deserialization: PASS
+- test_profile_to_json: PASS
+
+**下一步**:
+- Task 4: EnneagramProfile 数据模型实现
+
+---
+
 ## 记录格式
 
 每次完成新功能后，按以下格式记录：
