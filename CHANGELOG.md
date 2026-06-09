@@ -306,6 +306,39 @@
 **下一步**:
 - Sprint-2: 角色聊天
 
+---
+
+## Sprint-2 角色聊天 MVP
+
+#### Task 1: CharacterLoader 实现 ✅
+
+**完成时间**: 2026-06-09 13:25
+
+**完成内容**:
+- 创建 src/chat/__init__.py (聊天模块入口)
+- 创建 src/chat/character_loader.py (CharacterLoader 实现)
+- 创建 tests/chat/__init__.py (聊天测试包)
+- 创建 tests/chat/test_character_loader.py (CharacterLoader 测试)
+
+**技术细节**:
+- 实现 CharacterLoader 类
+- 实现 load() 方法，加载角色信息
+- 实现 _load_from_source() 方法，从数据源加载
+- 支持加载 PersonalityProfile, BigFiveProfile, EnneagramProfile
+- 支持角色不存在和数据无效的错误处理
+
+**测试结果**:
+- test_loader_initialization: PASS
+- test_load_returns_character: PASS
+- test_load_personality_profile: PASS
+- test_load_big_five_profile: PASS
+- test_load_enneagram_profile: PASS
+- test_load_nonexistent_character: PASS
+- test_load_invalid_data: PASS
+
+**下一步**:
+- Task 2: KnowledgeLoader 实现
+
 ## 记录格式
 
 每次完成新功能后，按以下格式记录：
