@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}对话历史 - 失忆宝宝{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>📜 对话历史</h2>
+    <p>查看和管理各角色的对话记忆</p>
+</div>
+
+<div class="history-layout">
+    <div class="history-sidebar">
+        <h3>角色列表</h3>
+        <div id="history-char-list" class="character-list">
+            <div class="placeholder">加载中...</div>
+        </div>
+        <button class="btn-secondary" style="width:100%;margin-top:12px" onclick="loadHistoryCharacters()">🔄 刷新</button>
+    </div>
+
+    <div class="history-main">
+        <div class="history-header">
+            <span id="history-char-name">请选择角色</span>
+            <div>
+                <button class="btn-secondary" id="clear-btn" style="display:none" onclick="clearHistory()">🗑️ 清空历史</button>
+            </div>
+        </div>
+        <div class="history-messages" id="history-messages">
+            <div class="placeholder">← 从左侧选择角色查看对话历史</div>
+        </div>
+        <div class="history-meta" id="history-meta"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/history.js"></script>
+{% endblock %}

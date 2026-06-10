@@ -85,8 +85,14 @@ class LongTermMemory:
     def get_all(self) -> List[MemoryItem]:
         """
         获取所有记忆
-        
+
         Returns:
             List[MemoryItem]: 所有记忆
         """
         return self._memories.copy()
+
+    def clear(self) -> None:
+        """
+        清空记忆
+        """
+        self._memories.clear()

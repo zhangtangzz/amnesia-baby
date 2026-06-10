@@ -31,3 +31,9 @@ async def knowledge_page(request: Request):
 async def profile_page(request: Request):
     """角色画像页面"""
     return templates.TemplateResponse(request, "profile.html")
+
+
+@router.get("/history", response_class=None)
+async def history_page(request: Request):
+    """对话历史页面"""
+    return templates.TemplateResponse(request, "history.html")
