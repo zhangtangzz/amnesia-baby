@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+.gitignore
+.env
+*.md
+tests/
+specs/
+docs/
+architecture/
+tasks/
+superpowers/
+.claude/
