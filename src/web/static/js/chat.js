@@ -134,30 +134,95 @@ async function sendMessage() {
 
     const sendBtn = document.getElementById('send-btn');
     sendBtn.disabled = true;
-    document.getElementById('chat-status').textContent = '思考中...';
+    document.getElementById('chat-status').textContent = '生成中...';
+
+    // 创建空的 assistant 消息容器
+    const msgEl = createStreamMessage();
+    const contentEl = msgEl.querySelector('.message-content');
 
     try {
-        const data = await apiCall('/chat/send', {
-            method: 'POST',
-            body: JSON.stringify({
-                character_id: currentCharacterId,
-                message: message,
-                provider: provider || undefined,
-            }),
+        const params = new URLSearchParams({
+            character_id: currentCharacterId,
+            message: message,
         });
+        if (provider) params.set('provider', provider);
 
-        if (data.success) {
-            const meta = data.data.provider + ' | ' + data.data.model;
-            addMessage('assistant', data.data.reply, meta);
-        } else {
-            addMessage('system', '发送失败: ' + (data.error || data.message));
+        const response = await fetch(API_BASE + '/chat/stream?' + params.toString());
+
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let fullReply = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // 解析 SSE 事件
+            const lines = buffer.split('\n');
+            buffer = lines.pop(); // 保留不完整的行
+
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                const dataStr = line.slice(6).trim();
+                if (dataStr === '[DONE]') {
+                    // 流结束，移除光标
+                    const cursor = contentEl.querySelector('.stream-cursor');
+                    if (cursor) cursor.remove();
+                    continue;
+                }
+                try {
+                    const data = JSON.parse(dataStr);
+                    if (data.type === 'chunk' && data.content) {
+                        fullReply += data.content;
+                        contentEl.textContent = fullReply;
+                        // 自动滚动到底部
+                        const container = document.getElementById('chat-messages');
+                        container.scrollTop = container.scrollHeight;
+                    } else if (data.type === 'done') {
+                        // 添加元信息
+                        if (data.provider) {
+                            const meta = document.createElement('div');
+                            meta.className = 'message-meta';
+                            meta.textContent = data.provider + (data.model ? ' | ' + data.model : '');
+                            msgEl.appendChild(meta);
+                        }
+                    } else if (data.type === 'error') {
+                        contentEl.innerHTML = '<span style="color:var(--error)">错误: ' + escapeHtml(data.message) + '</span>';
+                    }
+                } catch (e) {
+                    // JSON 解析失败，忽略
+                }
+            }
         }
     } catch (e) {
-        addMessage('system', '网络错误: ' + e.message);
+        // 移除光标后显示错误
+        const cursor = contentEl.querySelector('.stream-cursor');
+        if (cursor) cursor.remove();
+        contentEl.innerHTML = '<span style="color:var(--error)">网络错误: ' + escapeHtml(e.message) + '</span>';
     } finally {
+        // 确保光标被移除
+        const cursor = contentEl.querySelector('.stream-cursor');
+        if (cursor) cursor.remove();
         sendBtn.disabled = false;
         document.getElementById('chat-status').textContent = '就绪';
     }
+}
+
+function createStreamMessage() {
+    const container = document.getElementById('chat-messages');
+    const msg = document.createElement('div');
+    msg.className = 'message assistant';
+    msg.innerHTML = '<div class="message-content"><span class="stream-cursor">▌</span></div>';
+    container.appendChild(msg);
+    container.scrollTop = container.scrollHeight;
+    return msg;
 }
 
 function handleKeyDown(event) {

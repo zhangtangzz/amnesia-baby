@@ -84,7 +84,9 @@
       "Bash(venv/Scripts/python.exe -m pytest tests/chat/test_chat_engine.py -v --tb=short)",
       "Bash(xargs grep -l \"character\\\\|Character\")",
       "Bash(venv/Scripts/python.exe -m pytest tests/api/test_characters.py::TestCharacterUpdate -v --tb=short)",
-      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_characters.py -v --tb=short)"
+      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_characters.py -v --tb=short)",
+      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_chat.py::TestChatStreamAPI -v --tb=short)",
+      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_chat.py -v --tb=short)"
     ]
   }
 }

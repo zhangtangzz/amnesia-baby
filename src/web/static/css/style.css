@@ -90,4 +90,6 @@ button,.btn-primary,.btn-secondary{padding:10px 20px;border:none;border-radius:8
 .placeholder{color:var(--text-light);font-size:14px;text-align:center;padding:20px}
 .loading{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.stream-cursor{animation:blink 1s step-end infinite;color:var(--primary)}
+@keyframes blink{50%{opacity:0}}
 @media(max-width:768px){.chat-container{flex-direction:column;height:auto}.chat-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border)}.knowledge-layout,.profile-layout{grid-template-columns:1fr}}

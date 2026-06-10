@@ -2,9 +2,10 @@
 聊天引擎
 
 完整对话流水线：角色加载 → 知识加载 → 记忆上下文 → Prompt构建 → LLM调用 → 记忆存储
+支持流式输出 (SSE)
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, AsyncIterator
 from .character_loader import CharacterLoader
 from .knowledge_loader import KnowledgeLoader
 from .prompt_builder import PromptBuilder
@@ -62,22 +63,20 @@ class ChatEngine:
             router = LLMRouter(default_provider=provider_name, api_key=api_key, model=model)
             self.llm_provider = router.get_provider()
 
-    async def chat(
+    async def _build_messages(
         self,
         character_id: str,
         message: str,
-        context: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> List[Dict[str, str]]:
         """
-        角色聊天
+        构建完整消息列表（公共逻辑）
 
         Args:
             character_id: 角色ID
             message: 用户消息
-            context: 额外上下文
 
         Returns:
-            Dict: 包含回复、provider、model、usage 等
+            List[Dict]: 消息列表
         """
         # 1. 加载角色信息
         try:
@@ -114,10 +113,10 @@ class ChatEngine:
         # 添加当前用户消息
         messages.append({"role": "user", "content": message})
 
-        # 6. 调用 LLM
-        response: LLMResponse = await self.llm_provider.generate(messages)
+        return messages
 
-        # 7. 存储记忆（用户消息 + 助手回复）
+    def _store_memory(self, character_id: str, message: str, reply: str) -> None:
+        """存储对话记忆"""
         self.memory_service.add_memory(
             character_id=character_id,
             content=f"用户: {message}",
@@ -126,10 +125,35 @@ class ChatEngine:
         )
         self.memory_service.add_memory(
             character_id=character_id,
-            content=f"助手: {response.content}",
+            content=f"助手: {reply}",
             memory_type="conversation",
             importance=0.5,
         )
+
+    async def chat(
+        self,
+        character_id: str,
+        message: str,
+        context: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        角色聊天（非流式）
+
+        Args:
+            character_id: 角色ID
+            message: 用户消息
+            context: 额外上下文
+
+        Returns:
+            Dict: 包含回复、provider、model、usage 等
+        """
+        messages = await self._build_messages(character_id, message)
+
+        # 调用 LLM
+        response: LLMResponse = await self.llm_provider.generate(messages)
+
+        # 存储记忆
+        self._store_memory(character_id, message, response.content)
 
         return {
             "reply": response.content,
@@ -138,6 +162,34 @@ class ChatEngine:
             "model": response.model,
             "usage": response.usage.model_dump(),
         }
+
+    async def stream(
+        self,
+        character_id: str,
+        message: str,
+    ) -> AsyncIterator[str]:
+        """
+        角色聊天（流式）
+
+        流式返回文本 chunk，流结束后自动存储记忆
+
+        Args:
+            character_id: 角色ID
+            message: 用户消息
+
+        Yields:
+            str: 文本 chunk
+        """
+        messages = await self._build_messages(character_id, message)
+
+        # 收集完整回复用于存储记忆
+        full_reply = []
+        async for chunk in self.llm_provider.stream(messages):
+            full_reply.append(chunk)
+            yield chunk
+
+        # 流结束后存储记忆
+        self._store_memory(character_id, message, "".join(full_reply))
 
     def get_history(self, character_id: str) -> List[Dict[str, str]]:
         """

@@ -4,7 +4,7 @@
 基于 Anthropic 协议，通过小米 MIMO 代理访问大模型
 """
 
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, AsyncIterator
 import anthropic
 from .base import LLMProvider
 from .models import LLMResponse, TokenUsage
@@ -47,6 +47,32 @@ class XiaomiProvider(LLMProvider):
     def default_model(self) -> str:
         return self._model
 
+    def _build_kwargs(
+        self,
+        messages: List[Dict[str, str]],
+        model: Optional[str] = None,
+        temperature: float = 0.7,
+        max_tokens: int = 1024,
+    ) -> Dict[str, Any]:
+        """构建 Anthropic API 调用参数"""
+        system_prompt = None
+        user_messages = []
+        for msg in messages:
+            if msg["role"] == "system":
+                system_prompt = msg["content"]
+            else:
+                user_messages.append(msg)
+
+        kwargs: Dict[str, Any] = {
+            "model": model or self._model,
+            "messages": user_messages,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+        }
+        if system_prompt:
+            kwargs["system"] = system_prompt
+        return kwargs
+
     async def generate(
         self,
         messages: List[Dict[str, str]],
@@ -55,9 +81,7 @@ class XiaomiProvider(LLMProvider):
         max_tokens: int = 1024,
     ) -> LLMResponse:
         """
-        生成回复
-
-        Anthropic 协议中 system 是单独参数，不在 messages 里
+        生成回复（非流式）
 
         Args:
             messages: 消息列表
@@ -71,25 +95,7 @@ class XiaomiProvider(LLMProvider):
         if not messages:
             raise ValueError("Messages cannot be empty")
 
-        # 提取 system prompt
-        system_prompt = None
-        user_messages = []
-        for msg in messages:
-            if msg["role"] == "system":
-                system_prompt = msg["content"]
-            else:
-                user_messages.append(msg)
-
-        # 构建调用参数
-        kwargs: Dict[str, Any] = {
-            "model": model or self._model,
-            "messages": user_messages,
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-        }
-        if system_prompt:
-            kwargs["system"] = system_prompt
-
+        kwargs = self._build_kwargs(messages, model, temperature, max_tokens)
         response = await self.client.messages.create(**kwargs)
 
         # 提取内容
@@ -109,3 +115,31 @@ class XiaomiProvider(LLMProvider):
                 completion_tokens=usage.output_tokens,
             ),
         )
+
+    async def stream(
+        self,
+        messages: List[Dict[str, str]],
+        model: Optional[str] = None,
+        temperature: float = 0.7,
+        max_tokens: int = 1024,
+    ) -> AsyncIterator[str]:
+        """
+        流式生成回复
+
+        Args:
+            messages: 消息列表
+            model: 模型名称
+            temperature: 温度
+            max_tokens: 最大 token 数
+
+        Yields:
+            str: 文本 chunk
+        """
+        if not messages:
+            raise ValueError("Messages cannot be empty")
+
+        kwargs = self._build_kwargs(messages, model, temperature, max_tokens)
+
+        async with self.client.messages.stream(**kwargs) as stream:
+            async for text in stream.text_stream:
+                yield text

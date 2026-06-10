@@ -1,10 +1,12 @@
 """
 聊天API路由
 
-负责聊天相关API接口，支持角色人格 + 记忆 + 多轮对话
+负责聊天相关API接口，支持角色人格 + 记忆 + 多轮对话 + SSE 流式输出
 """
 
+import json
 from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
 from src.api.models.requests import ChatRequest
 from src.api.models.responses import ChatResponse, ErrorResponse
 from src.config import get_settings
@@ -141,3 +143,61 @@ async def get_token_stats():
         "data": token_tracker.summary(),
         "history": token_tracker.get_history()[-10:],
     }
+
+
+@router.get("/stream")
+async def stream_chat(character_id: str, message: str, provider: str = ""):
+    """
+    SSE 流式聊天
+
+    Args:
+        character_id: 角色ID
+        message: 用户消息
+        provider: LLM 提供商名称
+
+    Returns:
+        StreamingResponse: SSE 流式响应
+    """
+    settings = get_settings()
+
+    # 检查 API Key
+    api_keys = {
+        "openai": settings.openai_api_key,
+        "deepseek": settings.deepseek_api_key,
+        "qwen": settings.qwen_api_key,
+        "xiaomi": settings.xiaomi_api_key,
+    }
+    provider_name = provider or settings.llm_provider
+    has_api_key = bool(api_keys.get(provider_name, ""))
+
+    async def event_generator():
+        """SSE 事件生成器"""
+        if not has_api_key:
+            # Mock 模式：模拟流式输出
+            mock_reply = f"你好！我是{character_id}，很高兴认识你！"
+            for char in mock_reply:
+                yield f"data: {json.dumps({'type': 'chunk', 'content': char}, ensure_ascii=False)}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'provider': 'mock', 'model': 'mock'}, ensure_ascii=False)}\n\n"
+            yield "data: [DONE]\n\n"
+            return
+
+        try:
+            engine = _get_chat_engine()
+            async for chunk in engine.stream(character_id=character_id, message=message):
+                yield f"data: {json.dumps({'type': 'chunk', 'content': chunk}, ensure_ascii=False)}\n\n"
+
+            yield f"data: {json.dumps({'type': 'done', 'provider': provider_name}, ensure_ascii=False)}\n\n"
+            yield "data: [DONE]\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e)}, ensure_ascii=False)}\n\n"
+            yield "data: [DONE]\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
