@@ -2,7 +2,7 @@
 大五人格数据模型
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class BigFiveProfile(BaseModel):
@@ -47,14 +47,12 @@ class BigFiveProfile(BaseModel):
         description="神经质"
     )
     
-    class Config:
-        """Pydantic 配置"""
-        json_schema_extra = {
-            "example": {
-                "openness": 0.75,
-                "conscientiousness": 0.80,
-                "extraversion": 0.72,
-                "agreeableness": 0.65,
-                "neuroticism": 0.30,
-            }
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "openness": 0.75,
+            "conscientiousness": 0.80,
+            "extraversion": 0.72,
+            "agreeableness": 0.65,
+            "neuroticism": 0.30,
         }
+    })

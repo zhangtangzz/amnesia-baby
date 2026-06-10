@@ -118,7 +118,7 @@ class TestKnowledgeFileUpload:
     def test_upload_pdf_file(self, client):
         """测试上传 .pdf 文件"""
         import io
-        from PyPDF2 import PdfWriter
+        from pypdf import PdfWriter
         writer = PdfWriter()
         writer.add_blank_page(width=612, height=792)
         # 无法直接写入文本到 PDF，但可以测试解析器不会崩溃

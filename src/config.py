@@ -2,12 +2,14 @@
 应用配置管理
 """
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 
 
 class Settings(BaseSettings):
     """应用配置"""
+
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
     # LLM 提供商配置
     llm_provider: str = "openai"
@@ -39,10 +41,6 @@ class Settings(BaseSettings):
     app_debug: bool = True
     app_host: str = "0.0.0.0"
     app_port: int = 8000
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
 
 
 @lru_cache()

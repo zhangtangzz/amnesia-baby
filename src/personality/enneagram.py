@@ -2,7 +2,7 @@
 九型人格数据模型
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Tuple
 
 
@@ -97,18 +97,16 @@ class EnneagramProfile(BaseModel):
         sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
         return sorted_scores[:3]
     
-    class Config:
-        """Pydantic 配置"""
-        json_schema_extra = {
-            "example": {
-                "type1": 0.10,
-                "type2": 0.08,
-                "type3": 0.30,
-                "type4": 0.05,
-                "type5": 0.12,
-                "type6": 0.07,
-                "type7": 0.18,
-                "type8": 0.41,
-                "type9": 0.09,
-            }
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "type1": 0.10,
+            "type2": 0.08,
+            "type3": 0.30,
+            "type4": 0.05,
+            "type5": 0.12,
+            "type6": 0.07,
+            "type7": 0.18,
+            "type8": 0.41,
+            "type9": 0.09,
         }
+    })

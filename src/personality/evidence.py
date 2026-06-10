@@ -2,7 +2,7 @@
 人格证据数据模型
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, Dict, Any
 from enum import Enum
 
@@ -64,18 +64,16 @@ class PersonalityEvidence(BaseModel):
         description="扩展信息"
     )
     
-    class Config:
-        """Pydantic 配置"""
-        json_schema_extra = {
-            "example": {
-                "trait": "risk_preference",
-                "score": 0.91,
-                "evidence": "创业最大的风险是不创业",
-                "source": "采访视频",
-                "confidence": 0.88,
-                "metadata": {
-                    "timestamp": "12:33",
-                    "speaker": "角色本人",
-                },
-            }
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "trait": "risk_preference",
+            "score": 0.91,
+            "evidence": "创业最大的风险是不创业",
+            "source": "采访视频",
+            "confidence": 0.88,
+            "metadata": {
+                "timestamp": "12:33",
+                "speaker": "角色本人",
+            },
         }
+    })

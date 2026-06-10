@@ -64,7 +64,7 @@ def _parse_docx(content_bytes: bytes) -> Optional[str]:
 def _parse_pdf(content_bytes: bytes) -> Optional[str]:
     """解析 .pdf 文件"""
     try:
-        from PyPDF2 import PdfReader
+        from pypdf import PdfReader
         reader = PdfReader(io.BytesIO(content_bytes))
         pages = []
         for page in reader.pages:

@@ -97,7 +97,11 @@
       "Bash(venv/Scripts/python.exe -c \"import pdfplumber; print\\('pdfplumber OK'\\)\")",
       "Bash(venv/Scripts/pip.exe install *)",
       "Bash(venv/Scripts/python.exe -m pytest tests/api/test_knowledge.py -v --tb=short)",
-      "Bash(venv/Scripts/pip.exe list *)"
+      "Bash(venv/Scripts/pip.exe list *)",
+      "Bash(venv/Scripts/python.exe -m pytest --tb=short -q --co)",
+      "Bash(venv/Scripts/python.exe -m pytest --tb=short -q --cov=src --cov-report=term-missing)",
+      "Bash(venv/Scripts/python.exe -m pytest --tb=short -q -W default::DeprecationWarning)",
+      "Bash(venv/Scripts/python.exe -c \"import pypdf; print\\('pypdf', pypdf.__version__\\)\")"
     ]
   }
 }

@@ -2,7 +2,7 @@
 人格画像数据模型
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
 
 
@@ -83,19 +83,17 @@ class PersonalityProfile(BaseModel):
         description="社交需求"
     )
     
-    class Config:
-        """Pydantic 配置"""
-        json_schema_extra = {
-            "example": {
-                "achievement_drive": 0.8,
-                "curiosity": 0.7,
-                "risk_preference": 0.6,
-                "security_need": 0.4,
-                "dominance": 0.5,
-                "empathy": 0.9,
-                "independence": 0.7,
-                "responsibility": 0.8,
-                "creativity": 0.6,
-                "social_need": 0.5,
-            }
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "achievement_drive": 0.8,
+            "curiosity": 0.7,
+            "risk_preference": 0.6,
+            "security_need": 0.4,
+            "dominance": 0.5,
+            "empathy": 0.9,
+            "independence": 0.7,
+            "responsibility": 0.8,
+            "creativity": 0.6,
+            "social_need": 0.5,
         }
+    })
