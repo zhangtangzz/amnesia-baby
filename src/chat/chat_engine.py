@@ -9,6 +9,7 @@ from .character_loader import CharacterLoader
 from .knowledge_loader import KnowledgeLoader
 from .prompt_builder import PromptBuilder
 from ..memory.service import MemoryService
+from ..memory.shared_service import get_shared_memory_service
 from ..knowledge.shared_store import get_shared_store
 from ..llm.xiaomi_provider import XiaomiProvider
 from ..llm.base import LLMProvider
@@ -29,6 +30,7 @@ class ChatEngine:
         base_url: str = "https://token-plan-cn.xiaomimimo.com/anthropic",
         model: str = "mimo-v2.5-pro",
         llm_provider: Optional[LLMProvider] = None,
+        memory_service: Optional[MemoryService] = None,
     ):
         """
         初始化引擎
@@ -39,11 +41,12 @@ class ChatEngine:
             base_url: API Base URL
             model: 模型名称
             llm_provider: 可选的外部 LLM 提供商实例
+            memory_service: 可选的外部 MemoryService 实例
         """
         self.character_loader = CharacterLoader()
         self.knowledge_loader = KnowledgeLoader(store=get_shared_store())
         self.prompt_builder = PromptBuilder()
-        self.memory_service = MemoryService(short_term_size=50)
+        self.memory_service = memory_service or get_shared_memory_service()
 
         # 创建或使用外部 LLM 提供商
         if llm_provider:

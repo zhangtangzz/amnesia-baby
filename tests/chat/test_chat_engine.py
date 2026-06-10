@@ -145,3 +145,69 @@ class TestChatEngine:
         assert len(history) >= 2  # user + assistant
         assert history[-2]["role"] == "user"
         assert history[-1]["role"] == "assistant"
+
+    def test_accepts_external_memory_service(self):
+        """测试接受外部 MemoryService 实例"""
+        from src.memory.service import MemoryService
+        with patch("src.chat.chat_engine.XiaomiProvider") as mock_provider:
+            mock_provider.return_value = MagicMock()
+            custom_ms = MemoryService(persist=False)
+            engine = ChatEngine(
+                provider_name="xiaomi",
+                api_key="test",
+                memory_service=custom_ms,
+            )
+            assert engine.memory_service is custom_ms
+
+    @pytest.mark.asyncio
+    async def test_memory_persists_across_engine_instances(self):
+        """测试记忆在引擎重启后保持（共享持久化 MemoryService）"""
+        from src.memory.service import MemoryService
+        from src.storage.database import DATA_DIR
+        import os
+
+        filepath = DATA_DIR / "memory.json"
+        if filepath.exists():
+            filepath.unlink()
+
+        try:
+            # 第一个引擎实例
+            shared_ms = MemoryService(persist=True)
+            with patch("src.chat.chat_engine.XiaomiProvider") as mock_p:
+                mock_p.return_value = MagicMock()
+                engine1 = ChatEngine(
+                    provider_name="xiaomi",
+                    api_key="test",
+                    memory_service=shared_ms,
+                )
+
+            mock_resp = MagicMock()
+            mock_resp.content = "我是 Elon！"
+            mock_resp.provider = "xiaomi"
+            mock_resp.model = "test"
+            mock_resp.usage = MagicMock()
+            mock_resp.usage.prompt_tokens = 10
+            mock_resp.usage.completion_tokens = 5
+            mock_resp.usage.total_tokens = 15
+            mock_resp.usage.model_dump.return_value = {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15}
+            engine1.llm_provider.generate = AsyncMock(return_value=mock_resp)
+
+            await engine1.chat("elon", "你好，我是你的粉丝")
+
+            # 第二个引擎实例（模拟重启）
+            new_ms = MemoryService(persist=True)
+            with patch("src.chat.chat_engine.XiaomiProvider") as mock_p:
+                mock_p.return_value = MagicMock()
+                engine2 = ChatEngine(
+                    provider_name="xiaomi",
+                    api_key="test",
+                    memory_service=new_ms,
+                )
+
+            history = engine2.get_history("elon")
+            assert len(history) >= 2
+            assert any("粉丝" in msg["content"] for msg in history)
+            assert any("Elon" in msg["content"] for msg in history)
+        finally:
+            if filepath.exists():
+                filepath.unlink()

@@ -9,6 +9,7 @@ from .consolidator import MemoryConsolidator
 from .context import ContextBuilder
 from .retriever import MemoryRetriever
 from .service import MemoryService
+from .shared_service import get_shared_memory_service
 
 __all__ = [
     "MemoryItem",
@@ -18,4 +19,5 @@ __all__ = [
     "ContextBuilder",
     "MemoryRetriever",
     "MemoryService",
+    "get_shared_memory_service",
 ]
