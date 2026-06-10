@@ -9,6 +9,7 @@ from typing import Optional
 from src.api.models.requests import KnowledgeRequest
 from src.api.models.responses import KnowledgeResponse, ErrorResponse
 from src.knowledge.service import KnowledgeService
+from src.knowledge.shared_store import get_shared_store
 
 router = APIRouter(prefix="/api/knowledge", tags=["知识库"])
 
@@ -211,5 +212,112 @@ async def upload_knowledge_file(
         return ErrorResponse(
             success=False,
             message="文件上传处理失败",
+            error=str(e),
+        )
+
+
+@router.get("/list", response_model=KnowledgeResponse)
+async def list_knowledge_bases():
+    """
+    列出所有知识库
+
+    Returns:
+        KnowledgeResponse: 知识库列表
+    """
+    try:
+        store = get_shared_store()
+        bases = []
+        for cid, kb in store._storage.items():
+            bases.append({
+                "character_id": cid,
+                "profile": kb.profile.model_dump(),
+                "facts_count": len(kb.facts),
+                "evidence_count": len(kb.evidence),
+                "relationships_count": len(kb.relationships),
+            })
+
+        return KnowledgeResponse(
+            success=True,
+            message="获取知识库列表成功",
+            data={"bases": bases, "count": len(bases)},
+        )
+    except Exception as e:
+        return ErrorResponse(
+            success=False,
+            message="获取知识库列表失败",
+            error=str(e),
+        )
+
+
+@router.get("/detail/{character_id}", response_model=KnowledgeResponse)
+async def get_knowledge_detail(character_id: str):
+    """
+    获取知识库详情（含全部 facts 和 evidence）
+
+    Args:
+        character_id: 角色ID
+
+    Returns:
+        KnowledgeResponse: 知识库详情
+    """
+    try:
+        kb = await knowledge_service.load(character_id)
+        if kb is None:
+            return ErrorResponse(
+                success=False,
+                message=f"知识库不存在: {character_id}",
+            )
+
+        return KnowledgeResponse(
+            success=True,
+            message="获取知识库详情成功",
+            data={
+                "character_id": character_id,
+                "profile": kb.profile.model_dump(),
+                "facts": [f.model_dump() for f in kb.facts],
+                "evidence": [e.model_dump() for e in kb.evidence],
+                "relationships": [r.model_dump() for r in kb.relationships],
+                "events": [ev.model_dump() for ev in kb.events],
+            },
+        )
+    except Exception as e:
+        return ErrorResponse(
+            success=False,
+            message="获取知识库详情失败",
+            error=str(e),
+        )
+
+
+@router.delete("/{character_id}", response_model=KnowledgeResponse)
+async def delete_knowledge_base(character_id: str):
+    """
+    删除知识库
+
+    Args:
+        character_id: 角色ID
+
+    Returns:
+        KnowledgeResponse: 操作结果
+    """
+    try:
+        store = get_shared_store()
+        if not await store.exists(character_id):
+            return ErrorResponse(
+                success=False,
+                message=f"知识库不存在: {character_id}",
+            )
+
+        await store.delete(character_id)
+        store._save_to_file()
+
+        return KnowledgeResponse(
+            success=True,
+            message="知识库删除成功",
+            data={"character_id": character_id},
+        )
+    except Exception as e:
+        return ErrorResponse(
+            success=False,
+            message="知识库删除失败",
             error=str(e),
         )

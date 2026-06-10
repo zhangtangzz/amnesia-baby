@@ -120,3 +120,142 @@ async function queryKnowledge() {
         showError('knowledge-result', e.message);
     }
 }
+
+// ============ 知识库管理 ============
+
+let selectedKBCharId = '';
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadKnowledgeBases();
+});
+
+async function loadKnowledgeBases() {
+    const container = document.getElementById('kb-list');
+    try {
+        const data = await apiCall('/knowledge/list');
+        if (!data.success || !data.data.bases || data.data.bases.length === 0) {
+            container.innerHTML = '<div class="placeholder">暂无知识库，请先上传素材</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+        data.data.bases.forEach(base => {
+            const item = document.createElement('div');
+            item.className = 'kb-item' + (selectedKBCharId === base.character_id ? ' active' : '');
+            item.onclick = function() { selectKB(this); };
+            item.dataset.id = base.character_id;
+
+            const name = (base.profile && base.profile.name) || base.character_id;
+            item.innerHTML =
+                '<div class="kb-item-main">' +
+                    '<span class="kb-item-name">' + escapeHtml(name) + '</span>' +
+                    '<span class="kb-item-id">' + escapeHtml(base.character_id) + '</span>' +
+                '</div>' +
+                '<div class="kb-item-stats">' +
+                    '<span title="事实">📝 ' + base.facts_count + '</span>' +
+                    '<span title="证据">📎 ' + base.evidence_count + '</span>' +
+                    '<span title="关系">🤝 ' + base.relationships_count + '</span>' +
+                '</div>';
+            container.appendChild(item);
+        });
+    } catch (e) {
+        container.innerHTML = '<div class="placeholder" style="color:var(--error)">加载失败: ' + e.message + '</div>';
+    }
+}
+
+function selectKB(element) {
+    document.querySelectorAll('.kb-item').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+    selectedKBCharId = element.dataset.id;
+    loadKBDetail(selectedKBCharId);
+}
+
+async function loadKBDetail(characterId) {
+    const panel = document.getElementById('kb-detail-panel');
+    const content = document.getElementById('kb-detail-content');
+    const title = document.getElementById('kb-detail-title');
+
+    panel.style.display = 'block';
+    title.textContent = '📚 ' + characterId + ' 知识库详情';
+    content.innerHTML = '<div class="loading"></div> 加载中...';
+
+    try {
+        const data = await apiCall('/knowledge/detail/' + characterId);
+        if (!data.success) {
+            content.innerHTML = '<div class="placeholder" style="color:var(--error)">' + escapeHtml(data.message) + '</div>';
+            return;
+        }
+
+        const d = data.data;
+        let html = '';
+
+        // 基础信息
+        if (d.profile) {
+            html += '<div class="kb-section"><h4>👤 基础信息</h4><div class="kb-kv">';
+            for (const [k, v] of Object.entries(d.profile)) {
+                if (v && v !== '' && (!Array.isArray(v) || v.length > 0)) {
+                    html += '<div class="kb-kv-row"><span class="kb-kv-key">' + escapeHtml(k) + '</span><span class="kb-kv-val">' + escapeHtml(Array.isArray(v) ? v.join(', ') : String(v)) + '</span></div>';
+                }
+            }
+            html += '</div></div>';
+        }
+
+        // 事实
+        if (d.facts && d.facts.length > 0) {
+            html += '<div class="kb-section"><h4>📝 事实 (' + d.facts.length + ')</h4><div class="kb-list-items">';
+            d.facts.forEach(f => {
+                html += '<div class="kb-list-item"><span class="kb-item-text">' + escapeHtml(f.fact) + '</span>' +
+                    '<span class="kb-item-badge">' + escapeHtml(f.category) + '</span>' +
+                    '<span class="kb-item-conf">' + Math.round(f.confidence * 100) + '%</span></div>';
+            });
+            html += '</div></div>';
+        }
+
+        // 证据
+        if (d.evidence && d.evidence.length > 0) {
+            html += '<div class="kb-section"><h4>📎 证据 (' + d.evidence.length + ')</h4><div class="kb-list-items">';
+            d.evidence.forEach(e => {
+                html += '<div class="kb-list-item"><span class="kb-item-text">' + escapeHtml(e.content) + '</span>' +
+                    '<span class="kb-item-badge">' + escapeHtml(e.source_name) + '</span></div>';
+            });
+            html += '</div></div>';
+        }
+
+        // 关系
+        if (d.relationships && d.relationships.length > 0) {
+            html += '<div class="kb-section"><h4>🤝 人物关系 (' + d.relationships.length + ')</h4><div class="kb-list-items">';
+            d.relationships.forEach(r => {
+                html += '<div class="kb-list-item"><span class="kb-item-text">' + escapeHtml(r.name) + ' - ' + escapeHtml(r.relationship) + '</span></div>';
+            });
+            html += '</div></div>';
+        }
+
+        content.innerHTML = html || '<div class="placeholder">知识库为空</div>';
+    } catch (e) {
+        content.innerHTML = '<div class="placeholder" style="color:var(--error)">加载失败: ' + e.message + '</div>';
+    }
+}
+
+function closeDetail() {
+    document.getElementById('kb-detail-panel').style.display = 'none';
+    document.querySelectorAll('.kb-item').forEach(el => el.classList.remove('active'));
+    selectedKBCharId = '';
+}
+
+async function deleteKnowledgeBase() {
+    if (!selectedKBCharId) return;
+    if (!confirm('确定要删除知识库 "' + selectedKBCharId + '" 吗？此操作不可恢复。')) return;
+
+    try {
+        const data = await apiCall('/knowledge/' + selectedKBCharId, { method: 'DELETE' });
+        if (data.success) {
+            closeDetail();
+            loadKnowledgeBases();
+        } else {
+            alert(data.message || '删除失败');
+        }
+    } catch (e) {
+        alert('删除失败: ' + e.message);
+    }
+}
+

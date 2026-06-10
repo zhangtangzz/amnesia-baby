@@ -26,3 +26,10 @@ function showError(elementId, message) {
 function formatJSON(obj) {
     return JSON.stringify(obj, null, 2);
 }
+
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+}

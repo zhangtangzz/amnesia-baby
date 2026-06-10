@@ -117,12 +117,6 @@ function addMessage(role, content, meta = '') {
     container.scrollTop = container.scrollHeight;
 }
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
 async function sendMessage() {
     const input = document.getElementById('message-input');
     const message = input.value.trim();

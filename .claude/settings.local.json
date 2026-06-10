@@ -89,7 +89,9 @@
       "Bash(venv/Scripts/python.exe -m pytest tests/api/test_chat.py -v --tb=short)",
       "Bash(xargs grep -l \"history\")",
       "Bash(venv/Scripts/python.exe -m pytest tests/api/test_memory.py -v --tb=short)",
-      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_memory.py::TestMemoryHistoryAPI::test_list_characters_with_memory -v --tb=long)"
+      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_memory.py::TestMemoryHistoryAPI::test_list_characters_with_memory -v --tb=long)",
+      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_knowledge.py::TestKnowledgeManagement -v --tb=line)",
+      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_knowledge.py::TestKnowledgeManagement -v --tb=short)"
     ]
   }
 }

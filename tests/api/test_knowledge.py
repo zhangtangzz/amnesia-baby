@@ -137,3 +137,83 @@ class TestKnowledgeFileUpload:
         data = response.json()
         assert data["success"] is True
         assert data["data"]["filename"] == "data.csv"
+
+
+class TestKnowledgeManagement:
+    """知识库管理 API 测试"""
+
+    @pytest.fixture
+    def client(self):
+        return TestClient(app)
+
+    def _add_test_knowledge(self, client, character_id="mgmt_test"):
+        """添加测试知识"""
+        client.post("/api/knowledge/process", json={
+            "text": "李四是一名优秀的软件工程师，毕业于北京大学计算机系",
+            "source": "测试来源",
+            "character_id": character_id,
+        })
+
+    def test_list_knowledge_bases(self, client):
+        """测试列出所有知识库"""
+        self._add_test_knowledge(client)
+        response = client.get("/api/knowledge/list")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is True
+        bases = data["data"]["bases"]
+        cids = [b["character_id"] for b in bases]
+        assert "mgmt_test" in cids
+
+    def test_list_shows_facts_count(self, client):
+        """测试列表显示事实条数"""
+        self._add_test_knowledge(client)
+        response = client.get("/api/knowledge/list")
+        bases = response.json()["data"]["bases"]
+        for b in bases:
+            if b["character_id"] == "mgmt_test":
+                assert b["facts_count"] >= 0
+                assert "profile" in b
+
+    def test_delete_knowledge_base(self, client):
+        """测试删除知识库"""
+        self._add_test_knowledge(client, "to_delete_kb")
+        # 确认存在
+        response = client.get("/api/knowledge/base/to_delete_kb")
+        assert response.json()["data"]["exists"] is True
+
+        # 删除
+        response = client.delete("/api/knowledge/to_delete_kb")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is True
+
+        # 验证已删除
+        response = client.get("/api/knowledge/base/to_delete_kb")
+        assert response.json()["data"]["exists"] is False
+
+    def test_delete_nonexistent_knowledge(self, client):
+        """测试删除不存在的知识库"""
+        response = client.delete("/api/knowledge/nonexistent_kb_999")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is False
+        assert "不存在" in data["message"]
+
+    def test_get_knowledge_detail(self, client):
+        """测试获取知识库详情（含 facts 和 evidence）"""
+        self._add_test_knowledge(client, "detail_test")
+        response = client.get("/api/knowledge/detail/detail_test")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is True
+        assert "profile" in data["data"]
+        assert "facts" in data["data"]
+        assert "evidence" in data["data"]
+
+    def test_get_detail_nonexistent(self, client):
+        """测试获取不存在知识库的详情"""
+        response = client.get("/api/knowledge/detail/nonexistent_999")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is False

@@ -59,6 +59,31 @@
         <div id="knowledge-result" class="result-box"></div>
     </div>
 </div>
+
+<!-- 知识库管理 -->
+<div style="margin-top: 32px;">
+    <div class="kb-manage-section">
+        <div class="kb-manage-header">
+            <h3>📋 已有知识库</h3>
+            <button class="btn-secondary" onclick="loadKnowledgeBases()">🔄 刷新</button>
+        </div>
+        <div id="kb-list" class="kb-list">
+            <div class="placeholder">加载中...</div>
+        </div>
+    </div>
+
+    <!-- 详情面板 -->
+    <div id="kb-detail-panel" class="kb-detail-panel" style="display:none;">
+        <div class="kb-detail-header">
+            <h3 id="kb-detail-title">知识库详情</h3>
+            <div style="display:flex;gap:8px">
+                <button class="btn-secondary" onclick="closeDetail()">关闭</button>
+                <button class="btn-secondary" style="color:var(--error)" onclick="deleteKnowledgeBase()">🗑️ 删除</button>
+            </div>
+        </div>
+        <div id="kb-detail-content" class="kb-detail-content"></div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
