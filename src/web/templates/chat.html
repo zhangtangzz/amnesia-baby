@@ -20,6 +20,18 @@
             </div>
         </div>
 
+        <div id="edit-form" style="display:none;margin-top:12px">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--primary)">编辑角色</div>
+            <input type="hidden" id="edit-char-id">
+            <input type="text" id="edit-char-name" placeholder="角色名称" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+            <input type="text" id="edit-char-avatar" placeholder="头像emoji" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+            <input type="text" id="edit-char-desc" placeholder="角色描述" style="width:100%;padding:6px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+            <div style="display:flex;gap:6px">
+                <button class="btn-primary" style="flex:1" onclick="saveEditCharacter()">保存</button>
+                <button class="btn-secondary" style="flex:1" onclick="hideEditForm()">取消</button>
+            </div>
+        </div>
+
         <div class="provider-select">
             <label>LLM 提供商</label>
             <select id="provider-select">

@@ -23,6 +23,14 @@ class CharacterCreateRequest(BaseModel):
     personality: Optional[Dict[str, float]] = Field(default=None, description="人格特征")
 
 
+class CharacterUpdateRequest(BaseModel):
+    """更新角色请求（所有字段可选）"""
+    name: Optional[str] = Field(default=None, description="角色名称")
+    avatar: Optional[str] = Field(default=None, description="头像emoji")
+    description: Optional[str] = Field(default=None, description="角色描述")
+    personality: Optional[Dict[str, float]] = Field(default=None, description="人格特征")
+
+
 class CharacterResponse(BaseModel):
     """角色响应"""
     success: bool
@@ -65,6 +73,20 @@ async def create_character(request: CharacterCreateRequest):
         personality=request.personality,
     )
     return CharacterResponse(success=True, message="角色创建成功", data=char)
+
+
+@router.put("/{character_id}", response_model=CharacterResponse)
+async def update_character(character_id: str, request: CharacterUpdateRequest):
+    """更新角色（部分更新）"""
+    # 只传非 None 的字段
+    updates = {k: v for k, v in request.model_dump().items() if v is not None}
+    if not updates:
+        return CharacterResponse(success=False, message="没有需要更新的字段")
+
+    char = _character_store.update(character_id, **updates)
+    if char is None:
+        return CharacterResponse(success=False, message=f"角色不存在: {character_id}")
+    return CharacterResponse(success=True, message="角色更新成功", data=char)
 
 
 @router.delete("/{character_id}", response_model=CharacterResponse)

@@ -26,9 +26,18 @@ function renderCharacterList(characters) {
         const item = document.createElement('div');
         item.className = 'character-item' + (index === 0 ? ' active' : '');
         item.dataset.id = char.character_id;
-        item.onclick = function() { selectCharacter(this); };
-        item.innerHTML = '<span class="char-avatar">' + (char.avatar || '👤') + '</span>' +
-            '<span class="char-name">' + escapeHtml(char.name) + '</span>';
+        item.onclick = function(e) {
+            // 点击按钮时不切换角色
+            if (e.target.closest('.char-actions')) return;
+            selectCharacter(this);
+        };
+        item.innerHTML =
+            '<span class="char-avatar">' + (char.avatar || '👤') + '</span>' +
+            '<span class="char-name">' + escapeHtml(char.name) + '</span>' +
+            '<span class="char-actions">' +
+                '<button class="char-btn edit-btn" onclick="editCharacter(\'' + char.character_id + '\')" title="编辑">✏️</button>' +
+                '<button class="char-btn delete-btn" onclick="deleteCharacter(\'' + char.character_id + '\')" title="删除">🗑️</button>' +
+            '</span>';
         container.appendChild(item);
     });
 
@@ -53,6 +62,7 @@ function selectCharacter(element) {
 
 function showCreateForm() {
     document.getElementById('create-form').style.display = 'block';
+    document.getElementById('edit-form').style.display = 'none';
 }
 
 function hideCreateForm() {
@@ -154,5 +164,88 @@ function handleKeyDown(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
         sendMessage();
+    }
+}
+
+// ============ 角色编辑/删除 ============
+
+async function editCharacter(characterId) {
+    try {
+        const data = await apiCall('/characters/' + characterId);
+        if (!data.success) {
+            alert('获取角色信息失败: ' + data.message);
+            return;
+        }
+
+        const char = data.data;
+        document.getElementById('edit-char-id').value = char.character_id;
+        document.getElementById('edit-char-name').value = char.name || '';
+        document.getElementById('edit-char-avatar').value = char.avatar || '';
+        document.getElementById('edit-char-desc').value = char.description || '';
+        document.getElementById('edit-form').style.display = 'block';
+        document.getElementById('create-form').style.display = 'none';
+    } catch (e) {
+        alert('获取角色信息失败: ' + e.message);
+    }
+}
+
+function hideEditForm() {
+    document.getElementById('edit-form').style.display = 'none';
+}
+
+async function saveEditCharacter() {
+    const id = document.getElementById('edit-char-id').value;
+    const name = document.getElementById('edit-char-name').value.trim();
+    const avatar = document.getElementById('edit-char-avatar').value.trim();
+    const desc = document.getElementById('edit-char-desc').value.trim();
+
+    if (!name) {
+        alert('角色名称不能为空');
+        return;
+    }
+
+    try {
+        const data = await apiCall('/characters/' + id, {
+            method: 'PUT',
+            body: JSON.stringify({
+                name: name,
+                avatar: avatar || '👤',
+                description: desc,
+            }),
+        });
+
+        if (data.success) {
+            hideEditForm();
+            loadCharacters(); // 刷新列表
+        } else {
+            alert(data.message || '更新失败');
+        }
+    } catch (e) {
+        alert('更新失败: ' + e.message);
+    }
+}
+
+async function deleteCharacter(characterId) {
+    if (!confirm('确定要删除角色 "' + characterId + '" 吗？')) {
+        return;
+    }
+
+    try {
+        const data = await apiCall('/characters/' + characterId, {
+            method: 'DELETE',
+        });
+
+        if (data.success) {
+            loadCharacters(); // 刷新列表
+            // 清空聊天区域
+            document.getElementById('chat-messages').innerHTML =
+                '<div class="message system"><div class="message-content">角色已删除，请选择其他角色</div></div>';
+            currentCharacterId = '';
+            document.getElementById('current-character').textContent = '请选择角色';
+        } else {
+            alert(data.message || '删除失败');
+        }
+    } catch (e) {
+        alert('删除失败: ' + e.message);
     }
 }

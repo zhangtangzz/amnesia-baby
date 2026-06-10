@@ -71,7 +71,20 @@
       "Bash(ls venv/Scripts/)",
       "Bash(ls env/Scripts/)",
       "Bash(./venv/Scripts/python.exe -m pytest tests/api/test_knowledge.py -v)",
-      "Bash(./venv/Scripts/python.exe -m pytest tests/ -v --tb=short)"
+      "Bash(./venv/Scripts/python.exe -m pytest tests/ -v --tb=short)",
+      "Bash(PYTHONIOENCODING=utf-8 ./venv/Scripts/python.exe -m uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload)",
+      "Bash(python -m pytest --tb=short -q)",
+      "Bash(python -m pip list)",
+      "Bash(findstr pytest *)",
+      "Bash(dir /b)",
+      "Bash(venv/Scripts/python.exe -m pytest --tb=short -q)",
+      "Bash(xargs grep -l \"memory\\\\|Memory\")",
+      "Bash(venv/Scripts/python.exe -m pytest tests/memory/test_service.py::TestMemoryPersistence -v --tb=short)",
+      "Bash(venv/Scripts/python.exe -m pytest tests/memory/test_service.py -v --tb=short)",
+      "Bash(venv/Scripts/python.exe -m pytest tests/chat/test_chat_engine.py -v --tb=short)",
+      "Bash(xargs grep -l \"character\\\\|Character\")",
+      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_characters.py::TestCharacterUpdate -v --tb=short)",
+      "Bash(venv/Scripts/python.exe -m pytest tests/api/test_characters.py -v --tb=short)"
     ]
   }
 }
