@@ -101,7 +101,9 @@
       "Bash(venv/Scripts/python.exe -m pytest --tb=short -q --co)",
       "Bash(venv/Scripts/python.exe -m pytest --tb=short -q --cov=src --cov-report=term-missing)",
       "Bash(venv/Scripts/python.exe -m pytest --tb=short -q -W default::DeprecationWarning)",
-      "Bash(venv/Scripts/python.exe -c \"import pypdf; print\\('pypdf', pypdf.__version__\\)\")"
+      "Bash(venv/Scripts/python.exe -c \"import pypdf; print\\('pypdf', pypdf.__version__\\)\")",
+      "Bash(venv/Scripts/python.exe -m pytest tests/memory/test_context.py -v --tb=short --cov=src/memory/context --cov-report=term-missing)",
+      "Bash(venv/Scripts/python.exe -m pytest --tb=short -q --cov=src)"
     ]
   }
 }
