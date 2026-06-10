@@ -116,3 +116,64 @@ function renderEnneagram(enneagram) {
 document.addEventListener('DOMContentLoaded', () => {
     loadProfile();
 });
+
+// ============ 行为预测 ============
+
+const SCENARIO_LABELS = {
+    'risk_decision': '🎲 风险决策',
+    'social_interaction': '🤝 社交互动',
+    'conflict_resolution': '⚡ 冲突处理',
+    'creative_problem': '💡 创意问题',
+    'leadership': '👑 领导力',
+    'stress_response': '🔥 压力应对',
+};
+
+async function loadPrediction() {
+    const characterId = document.getElementById('p-character-id').value.trim();
+    if (!characterId) {
+        alert('请先输入角色ID');
+        return;
+    }
+
+    const btn = document.getElementById('predict-btn');
+    btn.disabled = true;
+    btn.textContent = '预测中...';
+    const container = document.getElementById('prediction-results');
+    container.innerHTML = '<div class="loading"></div> 正在分析...';
+
+    try {
+        const data = await apiCall('/predict/all', {
+            method: 'POST',
+            body: JSON.stringify({ character_id: characterId }),
+        });
+
+        if (!data.success) {
+            container.innerHTML = '<span style="color:var(--error)">' + escapeHtml(data.message) + '</span>';
+            return;
+        }
+
+        const predictions = data.data.predictions;
+        let html = '<div class="predictions-grid">';
+        predictions.forEach(p => {
+            const pct = Math.round(p.tendency * 100);
+            const label = SCENARIO_LABELS[p.scenario] || p.scenario;
+            const confPct = Math.round(p.confidence * 100);
+            html += '<div class="prediction-card">' +
+                '<div class="prediction-header">' +
+                    '<span class="prediction-label">' + label + '</span>' +
+                    '<span class="prediction-pct">' + pct + '%</span>' +
+                '</div>' +
+                '<div class="trait-bar"><div class="trait-fill prediction-fill" style="width:' + pct + '%"></div></div>' +
+                '<div class="prediction-desc">' + escapeHtml(p.description) + '</div>' +
+                '<div class="prediction-conf">置信度: ' + confPct + '%</div>' +
+                '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    } catch (e) {
+        container.innerHTML = '<span style="color:var(--error)">预测失败: ' + e.message + '</span>';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '生成行为预测';
+    }
+}

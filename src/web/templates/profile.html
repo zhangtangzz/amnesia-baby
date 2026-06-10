@@ -44,6 +44,15 @@
                 <p class="placeholder">加载角色后显示九型人格</p>
             </div>
         </div>
+
+        <div class="profile-card">
+            <h3>🎯 行为预测</h3>
+            <p style="color:var(--text-light);font-size:13px;margin-bottom:12px">基于人格画像预测在不同场景下的行为倾向</p>
+            <button onclick="loadPrediction()" class="btn-primary" id="predict-btn">生成行为预测</button>
+            <div id="prediction-results" style="margin-top:16px">
+                <p class="placeholder">点击按钮生成行为预测</p>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

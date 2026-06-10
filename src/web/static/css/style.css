@@ -115,6 +115,15 @@ button,.btn-primary,.btn-secondary{padding:10px 20px;border:none;border-radius:8
 .kb-item-text{flex:1}
 .kb-item-badge{font-size:11px;padding:2px 8px;background:var(--primary-light);color:#fff;border-radius:10px;white-space:nowrap}
 .kb-item-conf{font-size:11px;color:var(--primary);font-weight:600}
+/* predictions */
+.predictions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.prediction-card{background:var(--bg);padding:14px;border-radius:8px}
+.prediction-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.prediction-label{font-weight:600;font-size:14px}
+.prediction-pct{font-size:18px;font-weight:700;color:var(--primary)}
+.prediction-fill{transition:width .8s ease}
+.prediction-desc{font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.5}
+.prediction-conf{font-size:11px;color:var(--text-light);margin-top:4px}
 .loading{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .stream-cursor{animation:blink 1s step-end infinite;color:var(--primary)}
