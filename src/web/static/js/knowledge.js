@@ -46,14 +46,14 @@ async function uploadKnowledgeFile(event) {
         return;
     }
 
-    // 检查文件大小 (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-        showError('process-result', '文件过大，最大支持 5MB');
+    // 检查文件大小 (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+        showError('process-result', '文件过大，最大支持 10MB');
         return;
     }
 
     // 检查文件类型
-    const allowedExts = ['.txt', '.md', '.csv'];
+    const allowedExts = ['.txt', '.md', '.csv', '.docx', '.pdf'];
     const ext = '.' + file.name.split('.').pop().toLowerCase();
     if (!allowedExts.includes(ext)) {
         showError('process-result', '不支持的文件格式，仅支持 ' + allowedExts.join(', '));

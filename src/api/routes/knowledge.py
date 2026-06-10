@@ -10,6 +10,7 @@ from src.api.models.requests import KnowledgeRequest
 from src.api.models.responses import KnowledgeResponse, ErrorResponse
 from src.knowledge.service import KnowledgeService
 from src.knowledge.shared_store import get_shared_store
+from src.knowledge.file_parser import parse_file, SUPPORTED_EXTENSIONS
 
 router = APIRouter(prefix="/api/knowledge", tags=["知识库"])
 
@@ -131,8 +132,8 @@ async def get_knowledge_base(character_id: str):
 
 
 # 允许上传的文件扩展名
-ALLOWED_EXTENSIONS = {".txt", ".md", ".csv"}
-MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+ALLOWED_EXTENSIONS = SUPPORTED_EXTENSIONS
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB (pdf/docx 可能较大)
 
 
 @router.post("/upload", response_model=KnowledgeResponse)
@@ -144,7 +145,7 @@ async def upload_knowledge_file(
     """
     上传素材文件并处理为知识
 
-    支持 .txt, .md, .csv 格式，最大 5MB
+    支持 .txt, .md, .csv, .docx, .pdf 格式，最大 10MB
 
     Args:
         file: 上传的文件
@@ -176,23 +177,15 @@ async def upload_knowledge_file(
                 error=f"文件大小超过限制 (最大 {MAX_FILE_SIZE // 1024 // 1024}MB)",
             )
 
-        # 解码为文本
-        try:
-            text = content_bytes.decode("utf-8")
-        except UnicodeDecodeError:
-            try:
-                text = content_bytes.decode("gbk")
-            except UnicodeDecodeError:
-                text = content_bytes.decode("utf-8", errors="replace")
-
-        # 空文件检查
-        text = text.strip()
-        if not text:
+        # 解析文件内容
+        text = parse_file(content_bytes, filename)
+        if not text or not text.strip():
             return ErrorResponse(
                 success=False,
                 message="文件内容为空",
                 error="上传的文件不包含有效文本内容",
             )
+        text = text.strip()
 
         # 调用知识处理服务
         result = await knowledge_service.process(text, source or filename, character_id)

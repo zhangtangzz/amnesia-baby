@@ -86,13 +86,56 @@ class TestKnowledgeFileUpload:
         file_data = io.BytesIO(b"some content")
         response = client.post(
             "/api/knowledge/upload",
-            files={"file": ("test.pdf", file_data, "application/pdf")},
+            files={"file": ("test.exe", file_data, "application/octet-stream")},
             data={"source": "test", "character_id": "test"},
         )
         assert response.status_code == 200
         data = response.json()
         assert data["success"] is False
         assert "格式不支持" in data["message"]
+
+    def test_upload_docx_file(self, client):
+        """测试上传 .docx 文件"""
+        import io
+        from docx import Document
+        doc = Document()
+        doc.add_paragraph("张三是一名优秀的工程师，毕业于清华大学。")
+        doc.add_paragraph("他创办了一家科技公司，专注于人工智能领域。")
+        buf = io.BytesIO()
+        doc.save(buf)
+        buf.seek(0)
+        response = client.post(
+            "/api/knowledge/upload",
+            files={"file": ("bio.docx", buf, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+            data={"source": "docx_test", "character_id": "docx_char"},
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is True
+        assert data["data"]["filename"] == "bio.docx"
+        assert "profile" in data["data"]
+
+    def test_upload_pdf_file(self, client):
+        """测试上传 .pdf 文件"""
+        import io
+        from PyPDF2 import PdfWriter
+        writer = PdfWriter()
+        writer.add_blank_page(width=612, height=792)
+        # 无法直接写入文本到 PDF，但可以测试解析器不会崩溃
+        buf = io.BytesIO()
+        writer.write(buf)
+        buf.seek(0)
+        response = client.post(
+            "/api/knowledge/upload",
+            files={"file": ("test.pdf", buf, "application/pdf")},
+            data={"source": "pdf_test", "character_id": "pdf_char"},
+        )
+        # 空 PDF 应该返回内容为空
+        assert response.status_code == 200
+        data = response.json()
+        # 无文本内容的 PDF
+        assert data["success"] is False
+        assert "为空" in data["message"]
 
     def test_upload_empty_file(self, client):
         """测试上传空文件"""
@@ -111,8 +154,8 @@ class TestKnowledgeFileUpload:
     def test_upload_oversized_file(self, client):
         """测试上传超大文件"""
         import io
-        # 创建超过 5MB 的文件
-        file_data = io.BytesIO(b"x" * (6 * 1024 * 1024))
+        # 创建超过 10MB 的文件
+        file_data = io.BytesIO(b"x" * (11 * 1024 * 1024))
         response = client.post(
             "/api/knowledge/upload",
             files={"file": ("big.txt", file_data, "text/plain")},
@@ -137,6 +180,65 @@ class TestKnowledgeFileUpload:
         data = response.json()
         assert data["success"] is True
         assert data["data"]["filename"] == "data.csv"
+
+
+class TestFileParser:
+    """文件解析器测试"""
+
+    def test_parse_txt(self):
+        """测试解析 .txt"""
+        from src.knowledge.file_parser import parse_file
+        result = parse_file(b"Hello World", "test.txt")
+        assert result == "Hello World"
+
+    def test_parse_txt_utf8_chinese(self):
+        """测试解析中文 .txt"""
+        from src.knowledge.file_parser import parse_file
+        content = "张三毕业于清华大学".encode("utf-8")
+        result = parse_file(content, "test.txt")
+        assert "清华大学" in result
+
+    def test_parse_md(self):
+        """测试解析 .md"""
+        from src.knowledge.file_parser import parse_file
+        content = "# 标题\n\n正文内容".encode("utf-8")
+        result = parse_file(content, "test.md")
+        assert "标题" in result
+
+    def test_parse_csv(self):
+        """测试解析 .csv"""
+        from src.knowledge.file_parser import parse_file
+        content = "name,age\n张三,30".encode("utf-8")
+        result = parse_file(content, "test.csv")
+        assert "张三" in result
+
+    def test_parse_docx(self):
+        """测试解析 .docx"""
+        import io
+        from docx import Document
+        from src.knowledge.file_parser import parse_file
+        doc = Document()
+        doc.add_paragraph("测试文档内容")
+        buf = io.BytesIO()
+        doc.save(buf)
+        result = parse_file(buf.getvalue(), "test.docx")
+        assert result is not None
+        assert "测试文档内容" in result
+
+    def test_parse_unsupported(self):
+        """测试不支持的格式"""
+        from src.knowledge.file_parser import parse_file
+        result = parse_file(b"data", "test.xyz")
+        assert result is None
+
+    def test_supported_extensions(self):
+        """测试支持的扩展名列表"""
+        from src.knowledge.file_parser import SUPPORTED_EXTENSIONS
+        assert ".txt" in SUPPORTED_EXTENSIONS
+        assert ".md" in SUPPORTED_EXTENSIONS
+        assert ".csv" in SUPPORTED_EXTENSIONS
+        assert ".docx" in SUPPORTED_EXTENSIONS
+        assert ".pdf" in SUPPORTED_EXTENSIONS
 
 
 class TestKnowledgeManagement:
